@@ -1,0 +1,27 @@
+{
+  "name": "stockcrawler",
+  "version": "0.0.1",
+  "description": "node,crawler,redis",
+  "main": "index.js",
+  "scripts": {
+    "test": "webpack --mode development",
+    "build": "webpack --mode production"
+  },
+  "keywords": [
+    "node",
+    "crawler"
+  ],
+  "author": "xianbei233",
+  "license": "ISC",
+  "devDependencies": {
+    "mysql": "^2.16.0"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.2",
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-static": "^5.0.0",
+    "redis": "^2.8.0"
+  }
+}
