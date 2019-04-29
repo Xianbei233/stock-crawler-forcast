@@ -22,7 +22,18 @@ function cutInfo(res) {
     let date = new Date()
     let dateStr = date.toDateString()
     let target = $('.quote-digest')
-    console.log(target)
+    if (!target) {
+        return null
+    } else {
+        let result = {}
+        //date,highest, lowest, open, close
+        result.date = dateStr
+        result.hight = 1
+        result.lowest = 2
+        result.open = 3
+        result.close = 4
+        return result
+    }
 }
 
 

@@ -4,7 +4,7 @@ const config = {
         host: '127.0.0.1',
 
     },
-    stockType: {
+    stockMarket: {
         default: 'sz',
         list: [
             'sz',//深股通，代码6位数，起始000001，上限300769
