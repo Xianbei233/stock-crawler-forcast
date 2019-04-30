@@ -1,4 +1,4 @@
-const crawler = require('../')
+const crawler = require('../crawler')
 const fileCmd = require('file-cmd')
 const config = require('../config')
 const fs = require('fs')
@@ -18,20 +18,22 @@ service.getStock = async function (stockType, id) {
 
 
 service.updateStockInfo = async function () {
-    let hasStockList = fs.exists(path.resolve(__dirname, '../config/stockList.json'))//判断存储股票代码的json文件是否存在
+    await crawler.init()
+    let hasStockList = fs.existsSync(path.resolve(__dirname, '../config/stockList.json'))//判断存储股票代码的json文件是否存在
     if (hasStockList) {
-        let stockList = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'config/stockList.json'), 'utf8'))
+        let stockList = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../config/stockList.json'), 'utf8'))
         for (let market in stockList) {
 
-            stockList[market].forEach(id => {
-                let res = await crawler.getInfo(`${market}${id}`)
-                if (res) {
-                    db.setStock(`${market}${start}`, res.date, res.highest, res.lowest, res.open, res.close).then(res => { console.log(`${market}${start}:${res}`) }, err => {
-                        console.error(`${market}${start}:${err}`)
-                    })
-                }
-            });
+            // await stockList[market].forEach(async function (id) {
+            //     await fetch(market, id)
+            //     await fileCmd.wait(3000)
+            // });
+            for (let n = 0; n < stockList[market].length; n++) {
+                let id = stockList[market][n]
+                await fetch(market, id)
 
+            }
+            console.log('update finish')
         }
     } else {
         let stockList = {}
@@ -60,19 +62,33 @@ service.updateStockInfo = async function () {
                 firstFetch(start, end, market, stockList)
                 firstFetch(start2, end2, market, stockList)
             }
+            console.log('create finish');
 
         }
 
         fs.writeFileSync(path.resolve(__dirname, '../config/stockList.json'), JSON.stringify(stockList), 'utf8')
+        console.log('list store finish');
 
     }
-
-
+    console.log('closing')
+    await crawler.Close()
 
 }
 
 service.getLanguages = function () {
     return config.language.list
+}
+
+async function fetch(market, id) {
+    let res = await crawler.getInfo(`${market}${id}`);
+    console.log(res);
+
+    if (res) {
+        await db.setStock(`${market}${id}`, res.date, res.highest, res.lowest, res.open, res.close)
+
+        console.log('store success')
+    }
+    await fileCmd.wait(3000)
 }
 
 async function firstFetch(start, end, market, stockList) {
@@ -81,9 +97,9 @@ async function firstFetch(start, end, market, stockList) {
         let res = await crawler.getInfo(`${market}${start}`)
         if (res) {
             stockList[market].push(start)
-            db.setStock(`${market}${start}`, res.date, res.highest, res.lowest, res.open, res.close).then(res => { console.log(`${market}${start}:${res}`) }, err => {
-                console.error(`${market}${start}:${err}`)
-            })
+            let msg = await db.setStock(`${market}${start}`, res.date, res.highest, res.lowest, res.open, res.close)
+            console.log(`${market}${id}:${msg}`)
+
         }
         addstrnums(start)
         await fileCmd.wait(3000)    //每发一次请求等待3秒避免被发现
@@ -92,14 +108,14 @@ async function firstFetch(start, end, market, stockList) {
 }
 
 function addstrnums(str) {
-    var tmp = str.replace(/[^0-9]/ig, "");
-    var pos = str.indexOf(tmp);
+    let tmp = str.replace(/[^0-9]/ig, "");
+    let pos = str.indexOf(tmp);
 
     if (tmp != "") {
-        var nn = parseInt(tmp) + 1;
+        let nn = parseInt(tmp) + 1;
         nn = pad(nn, tmp.length);
-        var left = str.substring(0, pos);
-        var right = str.substring(pos + tmp.length);
+        let left = str.substring(0, pos);
+        let right = str.substring(pos + tmp.length);
         return left + nn + right;
     }
     else {

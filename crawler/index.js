@@ -1,42 +1,63 @@
-const axios = require('axios')
-const cheerio = require('cheerio')
-
+const pup = require('puppeteer')
 const baseUrl = 'http://quote.eastmoney.com/'
 
 const crawler = {}
 
-crawler.getInfo = id => {
-    return new Promise((resolve, reject) => {
-        let url = `{baseUrl}{id}.html`
-        axios.get(url).then(res => {
-            resolve(cutInfo(res.data))
-        }).catch(err => {
-            reject(err)
-        })
-    })
+
+crawler.init = async function () {
+    crawler.browser = await pup.launch();
+    console.log('launch success')
+    crawler.page = await crawler.browser.newPage();
+    console.log('page success')
 }
 
-
-function cutInfo(res) {
-    let $ = cheerio.load(res)
-    let date = new Date()
-    let dateStr = date.toDateString()
-    let target = $('.quote-digest')
-    if (!target) {
+crawler.getInfo = async function (id) {
+    // crawler.browser = await pup.launch();
+    // crawler.page = await crawler.browser.newPage();
+    if (!crawler.page) {
         return null
-    } else {
-        let result = {}
-        //date,highest, lowest, open, close
-        result.date = dateStr
-        result.hight = 1
-        result.lowest = 2
-        result.open = 3
-        result.close = 4
-        return result
     }
+    await crawler.page.goto(`${baseUrl}${id}.html`);
+    console.log('ok')
+    let res = await crawler.page.evaluate(() => {
+
+        function select(selector) {
+            let Dom = document.querySelector(selector)
+            let res
+            if (Dom) {
+                res = Dom.innerText
+            }
+            return res
+        }
+        let date = new Date()
+        let dateStr = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`
+        let highest = select('#gt2')
+        let lowest = select('#gt9')
+        let open = select('#gt1')
+        let close = select('#price9')
+        if (!open) {
+            return null
+        }
+        return {
+            date: dateStr,
+            highest: highest,
+            lowest: lowest,
+            open: open,
+            close: close
+        };
+    });
+
+    // await crawler.browser.close();
+    return res
 }
 
+crawler.Close = async function () {
+    if (crawler.browser) {
+        console.log('close success')
+        await crawler.browser.close();
 
-
+    }
+    
+}
 
 module.exports = crawler

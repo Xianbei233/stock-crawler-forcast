@@ -1,11 +1,12 @@
-let Koa = require('koa')
-let cors = require('koa-cors')
-let bodyparser = require('koa-bodyparser')
-var path = require('path')
-let koaStatic = require('koa-static')
-let schedule = require('./schedule')
+const Koa = require('koa')
+const cors = require('koa-cors')
+const bodyparser = require('koa-bodyparser')
+const path = require('path')
+const koaStatic = require('koa-static')
+const schedule = require('./schedule')
+//const service = require('./services')
 
-let app = new Koa()
+const app = new Koa()
 
 app.use(koaStatic(path.join(__dirname, 'public')))
 
@@ -14,7 +15,7 @@ app
     .use(bodyparser())
 
 
-
+//service.updateStockInfo()
 schedule.start()
 
-app.listen(9999)
+app.listen(8000)

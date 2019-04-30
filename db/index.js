@@ -9,12 +9,20 @@ client.on('error', (err) => {
     console.log('发生错误：' + err)
 })
 
+client.on('ready', function (res) {
+    console.log('client ready');
+});
+
 db.setStock = (id, date, highest, lowest, open, close) => {
     return new Promise((resolve, reject) => {
-        let value = `${highest},${lowest},${open},${close}`
-        client.hset(id, date, value, (res) => {
+        let value = `${open},${highest},${lowest},${close}`
+        client.hset(id, date, value, function (err, res) {
+            if (err) {
+                reject(err)
+            }
             resolve(res)
         })
+
     })
 }
 

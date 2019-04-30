@@ -1,7 +1,7 @@
 const config = {
     redis: {
         port: 6379,
-        host: '127.0.0.1',
+        host: 'localhost',
 
     },
     stockMarket: {
@@ -13,10 +13,6 @@ const config = {
             'us/',//美股，不做，代码是英文字符组成不好进行遍历抓取，除非有现成的表
 
         ]
-    },
-    db: {
-        type: 'redis',
-        initUrl: ''
     }
 }
 
