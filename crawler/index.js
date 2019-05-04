@@ -5,7 +5,7 @@ const crawler = {}
 
 
 crawler.init = async function () {
-    crawler.browser = await pup.launch();
+    crawler.browser = await pup.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
     console.log('launch success')
     crawler.page = await crawler.browser.newPage();
     console.log('page success')
