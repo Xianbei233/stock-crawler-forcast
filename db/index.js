@@ -15,7 +15,7 @@ client.on('ready', function (res) {
 
 db.setStock = (id, date, highest, lowest, open, close) => {
     return new Promise((resolve, reject) => {
-        let value = `${open},${highest},${lowest},${close}`
+        let value = [open, highest, lowest, close]
         client.hset(id, date, value, function (err, res) {
             if (err) {
                 reject(err)
