@@ -35,7 +35,7 @@ crawler.getInfo = async function (page, id) {
             return res
         }
         let date = new Date()
-        let dateStr = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+        let dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`
         let highest = select('#gt2')
         let lowest = select('#gt9')
         let open = select('#gt1')
