@@ -3,23 +3,28 @@ const baseUrl = 'http://quote.eastmoney.com/'
 
 const crawler = {}
 
+crawler.pageNum = 0
 
 crawler.init = async function () {
-    crawler.browser = await pup.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
+    crawler.browser = await pup.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     console.log('launch success')
-    crawler.page = await crawler.browser.newPage();
-    console.log('page success')
 }
 
-crawler.getInfo = async function (id) {
+crawler.newPage = async function () {
+    crawler.pageNum++
+    console.log(`page${crawler.pageNum} success`)
+    return await crawler.browser.newPage();
+}
+
+
+crawler.getInfo = async function (page, id) {
     // crawler.browser = await pup.launch();
     // crawler.page = await crawler.browser.newPage();
-    if (!crawler.page) {
+    if (!page) {
         return null
     }
-    await crawler.page.goto(`${baseUrl}${id}.html`);
-    console.log('ok')
-    let res = await crawler.page.evaluate(() => {
+    await page.goto(`${baseUrl}${id}.html`);
+    let res = await page.evaluate(() => {
 
         function select(selector) {
             let Dom = document.querySelector(selector)
@@ -30,7 +35,7 @@ crawler.getInfo = async function (id) {
             return res
         }
         let date = new Date()
-        let dateStr = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`
+        let dateStr = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
         let highest = select('#gt2')
         let lowest = select('#gt9')
         let open = select('#gt1')
@@ -57,7 +62,7 @@ crawler.Close = async function () {
         await crawler.browser.close();
 
     }
-    
+
 }
 
 module.exports = crawler
