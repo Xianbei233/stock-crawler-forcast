@@ -1,5 +1,7 @@
 const redis = require('redis')
 const config = require('../config')
+const { exec } = require('child_process');
+const formatter = require('../csvPaser')
 
 const client = redis.createClient(config.redis.port, config.redis.host)
 
@@ -15,7 +17,7 @@ client.on('ready', function (res) {
 
 db.setStock = (id, date, highest, lowest, open, close) => {
     return new Promise((resolve, reject) => {
-        let value = [open, highest, lowest, close]
+        let value = `${open},${highest},${lowest},${close}`
         client.hset(id, date, value, function (err, res) {
             if (err) {
                 reject(err)
@@ -43,12 +45,15 @@ db.getStock = id => {
 }
 
 db.getStockCSV = id => {
-    client.send_command(`--csv hgetall ${id} > ../csv/${id}.csv 2> stderr.txt`, (err, rep) => {
+    exec(`redis-cli --csv hgetall ${id} > ../csv/${id}.csv 2> stderr.txt`, function (err, stdout, stderr) {
         if (err) {
-            console.error(err)
-        } else {
-            console.log(rep)
+            console.error(err);
+            return err;
         }
+        console.log(`stdout: ${stdout}`);
+        console.log(`stderr: ${stderr}`);
+        formatter(id)
     })
+
 }
 module.exports = db
