@@ -47,10 +47,10 @@ async function accelerate(stockList) {
     let promiseArr = []
     for (let market in stockList) {
         let page = await crawler.newPage()
-        promiseArr.push(cycleFetch(page, market, stockList))
-
+        //promiseArr.push(cycleFetch(page, market, stockList))
+        await cycleFetch(page, market, stockList)
     }
-    await Promise.all(promiseArr)
+    //await Promise.all(promiseArr)
     console.log('update finish')
 }
 
@@ -58,37 +58,44 @@ async function cycleFetch(page, market, stockList) {
     for (let n = 0; n < stockList[market].length; n++) {
         let id = stockList[market][n]
         await fetch(page, market, id)
+
     }
+    await page.close()
 }
 
 async function boost(stockList) {
-    let promiseArr = []
-    let promiseArr2 = []
-    let promiseArr3 = []
+    //let promiseArr = []
+    //let promiseArr2 = []
+    //let promiseArr3 = []
     for (let market in stockList) {
         if (market == 'sz') {
             let start = '000001'
             let end = '300770'
-            promiseArr.push(firstFetch(start, end, market, stockList, await crawler.newPage()))
-            await Promise.all(promiseArr)
+            //promiseArr.push(firstFetch(start, end, market, stockList, await crawler.newPage()))
+            //await Promise.all(promiseArr)
+            await firstFetch(start, end, market, stockList, await crawler.newPage())
         }
         if (market == 'sh') {
             let start = '600000'
             let start2 = '900929'
             let end = '604000'
             let end2 = '900960'
-            promiseArr2.push(firstFetch(start, end, market, stockList, await crawler.newPage()))
-            promiseArr2.push(firstFetch(start2, end2, market, stockList, await crawler.newPage()))
-            await Promise.all(promiseArr2)
+            //promiseArr2.push(firstFetch(start, end, market, stockList, await crawler.newPage()))
+            //promiseArr2.push(firstFetch(start2, end2, market, stockList, await crawler.newPage()))
+            //await Promise.all(promiseArr2)
+            await firstFetch(start, end, market, stockList, await crawler.newPage())
+            await firstFetch(start2, end2, market, stockList, await crawler.newPage())
         }
         if (market == 'hk/') {
             let start = '00001'
             let start2 = '80000'
             let end = '10000'
             let end2 = '90000'
-            promiseArr3.push(firstFetch(start, end, market, await crawler.newPage()))
-            promiseArr3.push(firstFetch(start2, end2, market, await crawler.newPage()))
-            await Promise.all(promiseArr3)
+            //promiseArr3.push(firstFetch(start, end, market, await crawler.newPage()))
+            //promiseArr3.push(firstFetch(start2, end2, market, await crawler.newPage()))
+            //await Promise.all(promiseArr3)
+            await firstFetch(start, end, market, stockList, await crawler.newPage())
+            await firstFetch(start2, end2, market, stockList, await crawler.newPage())
         }
     }
 
@@ -123,7 +130,7 @@ async function firstFetch(start, end, market, stockList, page) {
         start = addstrnums(start)
         await fileCmd.wait(1000)    //每发一次请求等待1秒避免被发现
     }
-
+    await page.close()
 }
 
 function addstrnums(str) {
