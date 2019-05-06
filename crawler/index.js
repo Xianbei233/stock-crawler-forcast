@@ -1,5 +1,5 @@
 const pup = require('puppeteer')
-const baseUrl = 'http://quote.eastmoney.com/'
+const baseUrl = 'quote.eastmoney.com/'
 
 const crawler = {}
 
@@ -25,10 +25,14 @@ crawler.getInfo = async function (page, id) {
     if (!page) {
         return null
     }
-    await page.goto(`${baseUrl}${id}.html`, {
-        timeout: 0
+    let flag = await page.goto(`${baseUrl}${id}.html`, {
+        timeout: 2000
 
     });
+    // if (flag) {
+    //     await page.reload()
+    // }
+
     let res = await page.evaluate(() => {
 
         function select(selector) {
