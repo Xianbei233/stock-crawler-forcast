@@ -31,7 +31,7 @@ crawler.getInfo = async function (page, id) {
 
         });
     } catch (e) {
-        page.reload()
+        await page.reload()
     }
 
 
