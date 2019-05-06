@@ -23,7 +23,9 @@ crawler.getInfo = async function (page, id) {
     if (!page) {
         return null
     }
-    await page.goto(`${baseUrl}${id}.html`);
+    await page.goto(`${baseUrl}${id}.html`, {
+        timeout: 0
+    });
     let res = await page.evaluate(() => {
 
         function select(selector) {
