@@ -37,7 +37,7 @@ crawler.getInfo = async function (page, id) {
     }
 
 
-    let res = await page.evaluate(() => {
+    let res = await page.evaluate((date) => {
 
         function select(selector) {
             let Dom = document.querySelector(selector)
@@ -47,7 +47,7 @@ crawler.getInfo = async function (page, id) {
             }
             return res
         }
-        
+
         let highest = select('#gt2')
         let lowest = select('#gt9')
         let open = select('#gt1')
@@ -56,13 +56,13 @@ crawler.getInfo = async function (page, id) {
             return null
         }
         return {
-            date: crawler.date,
+            date: date,
             highest: highest,
             lowest: lowest,
             open: open,
             close: close
         };
-    });
+    }, crawler.date);
 
     // await crawler.browser.close();
     return res
