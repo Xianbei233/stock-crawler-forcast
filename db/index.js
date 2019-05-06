@@ -7,6 +7,10 @@ const client = redis.createClient(config.redis.port, config.redis.host)
 
 const db = {}
 
+client.auth(config.redis.auth, function () {
+    console.log('认证通过')
+})
+
 client.on('error', (err) => {
     console.log('发生错误：' + err)
 })

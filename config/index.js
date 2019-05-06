@@ -2,6 +2,7 @@ const config = {
     redis: {
         port: 6379,
         host: 'localhost',
+        auth: 'xianbei233'
 
     },
     stockMarket: {
