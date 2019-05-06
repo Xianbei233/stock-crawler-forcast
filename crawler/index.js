@@ -6,7 +6,7 @@ const crawler = {}
 crawler.pageNum = 0
 
 crawler.init = async function () {
-    crawler.browser = await pup.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable - dev - shm - usage'] });
+    crawler.browser = await pup.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable - dev - shm - usage'], ignoreHTTPSErrors: true, dumpio: false });
     console.log('launch success')
 }
 
@@ -27,6 +27,7 @@ crawler.getInfo = async function (page, id) {
     }
     await page.goto(`${baseUrl}${id}.html`, {
         timeout: 0
+
     });
     let res = await page.evaluate(() => {
 
