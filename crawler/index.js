@@ -25,13 +25,15 @@ crawler.getInfo = async function (page, id) {
     if (!page) {
         return null
     }
-    let flag = await page.goto(`${baseUrl}${id}.html`, {
-        timeout: 2000
+    try {
+        await page.goto(`${baseUrl}${id}.html`, {
+            timeout: 6000
 
-    });
-    // if(flag){
-    //     await page.reload()
-    // }
+        });
+    } catch (e) {
+        page.reload()
+    }
+
 
     let res = await page.evaluate(() => {
 
