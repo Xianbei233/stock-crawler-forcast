@@ -63,30 +63,37 @@ async function cycleFetch(page, market, stockList) {
 
 async function boost(stockList) {
     let promiseArr = []
+    let promiseArr2 = []
+    let promiseArr3 = []
     for (let market in stockList) {
         if (market == 'sz') {
             let start = '000001'
             let end = '300770'
             promiseArr.push(firstFetch(start, end, market, stockList, await crawler.newPage()))
+            await Promise.all(promiseArr)
         }
         if (market == 'sh') {
             let start = '600000'
             let start2 = '900929'
             let end = '604000'
             let end2 = '900960'
-            promiseArr.push(firstFetch(start, end, market, stockList, await crawler.newPage()))
-            promiseArr.push(firstFetch(start2, end2, market, stockList, await crawler.newPage()))
+            promiseArr2.push(firstFetch(start, end, market, stockList, await crawler.newPage()))
+            promiseArr2.push(firstFetch(start2, end2, market, stockList, await crawler.newPage()))
+            await Promise.all(promiseArr2)
         }
         if (market == 'hk/') {
             let start = '00001'
             let start2 = '80000'
             let end = '10000'
             let end2 = '90000'
-            promiseArr.push(firstFetch(start, end, market, await crawler.newPage()))
-            promiseArr.push(firstFetch(start2, end2, market, await crawler.newPage()))
+            promiseArr3.push(firstFetch(start, end, market, await crawler.newPage()))
+            promiseArr3.push(firstFetch(start2, end2, market, await crawler.newPage()))
+            await Promise.all(promiseArr3)
         }
     }
-    await Promise.all(promiseArr)
+
+
+
     console.log('create finish');
 }
 
@@ -104,14 +111,14 @@ async function fetch(page, market, id) {
 async function firstFetch(start, end, market, stockList, page) {
 
     while (start != end) {
-        console.log(`fetch ${market}${start}`)
+        //console.log(`fetch ${market}${start}`)
         let res = await crawler.getInfo(page, `${market}${start}`)
         if (res) {
             stockList[market].push(start)
             await db.setStock(`${market}${start}`, res.date, res.highest, res.lowest, res.open, res.close)
             console.log(`${market}${start}:success`)
         } else {
-            console.log(`${market}${start}:failed`)
+            //console.log(`${market}${start}:failed`)
         }
         start = addstrnums(start)
         await fileCmd.wait(1000)    //每发一次请求等待1秒避免被发现

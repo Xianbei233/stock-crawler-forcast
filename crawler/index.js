@@ -6,7 +6,7 @@ const crawler = {}
 crawler.pageNum = 0
 
 crawler.init = async function () {
-    crawler.browser = await pup.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+    crawler.browser = await pup.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable - dev - shm - usage'] });
     console.log('launch success')
 }
 
@@ -35,7 +35,7 @@ crawler.getInfo = async function (page, id) {
             return res
         }
         let date = new Date()
-        let dateStr = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`
+        let dateStr = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
         let highest = select('#gt2')
         let lowest = select('#gt9')
         let open = select('#gt1')
