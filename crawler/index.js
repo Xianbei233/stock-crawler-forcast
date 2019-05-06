@@ -13,7 +13,9 @@ crawler.init = async function () {
 crawler.newPage = async function () {
     crawler.pageNum++
     console.log(`page${crawler.pageNum} success`)
-    return await crawler.browser.newPage();
+    let page = await crawler.browser.newPage();
+    await page.setCacheEnabled(false)
+    return page
 }
 
 
