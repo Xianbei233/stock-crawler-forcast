@@ -6,7 +6,7 @@ const crawler = {}
 crawler.pageNum = 0
 
 crawler.init = async function () {
-    crawler.browser = await pup.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable - dev - shm - usage'], ignoreHTTPSErrors: true, dumpio: false });
+    crawler.browser = await pup.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable -dev-shm-usage'], ignoreHTTPSErrors: true, dumpio: false });
     console.log('launch success')
 }
 
@@ -32,7 +32,7 @@ crawler.getInfo = async function (page, id) {
     // if(flag){
     //     await page.reload()
     // }
-    
+
     let res = await page.evaluate(() => {
 
         function select(selector) {
