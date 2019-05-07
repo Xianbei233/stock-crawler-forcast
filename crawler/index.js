@@ -1,6 +1,7 @@
 const pup = require('puppeteer')
+const config = require('../config')
 const baseUrl = 'http://quote.eastmoney.com/'
-
+const userAgent = config.userAgentList.man
 const crawler = {}
 
 const blockedResourceTypes = [
@@ -36,12 +37,7 @@ const skippedResources = [
     'tiqcdn',
 ];
 
-const userAgent = {
-    baidu: 'Mozilla/ 5.0(compatible; Baiduspider / 2.0; +http://www.baidu.com/search/spider.html)',
-    Google: 'Mozilla / 5.0(compatible; Googlebot / 2.1; +http://www.google.com/bot.html)',
-    Sogou: 'Sogou web spider / 4.0(+http://www.sogou.com/docs/help/webmasters.htm#07)',
-    Yahoo: 'Mozilla / 5.0(compatible; Yahoo! Slurp / 3.0; http://help.yahoo.com/help/us/ysearch/slurp)'
-}
+
 crawler.pageNum = 0
 
 crawler.init = async function () {
@@ -66,7 +62,7 @@ crawler.newPage = async function () {
     page.on('request', request => {
         const requestUrl = request._url.split('?')[0].split('#')[0];
         if (blockedResourceTypes.indexOf(request.resourceType()) !== -1 ||
-            skippedResources.some(resource => requestUrl.indexOf(resource)) !== -1 ||
+            skippedResources.some(resource => requestUrl.indexOf(resource) == -1 ? false : true) !== false ||
             request.url().endsWith('.png') ||
             request.url().endsWith('.jpg') ||
             request.url().endsWith('.ico') ||
@@ -87,21 +83,27 @@ crawler.newPage = async function () {
 crawler.getInfo = async function (page, id) {
     // crawler.browser = await pup.launch();
     // crawler.page = await crawler.browser.newPage();
-    await page.setUserAgent(randomProperty(userAgent))
-    console.log('userAgent创建成功')
+    const agent = randomProperty(userAgent)
+    await page.setUserAgent(agent)
+
     if (!page) {
         return null
     }
+
     try {
-        await page.goto(`${baseUrl}${id}.html`, {
-            timeout: 25000,
+
+        let response = await page.goto(`${baseUrl}${id}.html`, {
             waitUntil: 'load',
+            timeout: 25000
+
         });
+        //console.log(response._status)
     } catch (e) {
         await page.reload({
             waitUntil: 'load',
             timeout: 250000
         })
+        console.log(e)
     }
 
 
