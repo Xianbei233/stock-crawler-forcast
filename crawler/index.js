@@ -36,7 +36,7 @@ crawler.getInfo = async function (page, id) {
     }
     try {
         await page.goto(`${baseUrl}${id}.html`, {
-            waitUntil: 'networkidle0',
+            waitUntil: 'load',
             timeout: 0
         });
     } catch (e) {
