@@ -3,10 +3,50 @@ const baseUrl = 'http://quote.eastmoney.com/'
 
 const crawler = {}
 
+const blockedResourceTypes = [
+    'image',
+    'media',
+    'font',
+    'texttrack',
+    'object',
+    'beacon',
+    'csp_report',
+    'imageset',
+];
+
+const skippedResources = [
+    'quantserve',
+    'adzerk',
+    'doubleclick',
+    'adition',
+    'exelator',
+    'sharethrough',
+    'cdn.api.twitter',
+    'google-analytics',
+    'googletagmanager',
+    'google',
+    'fontawesome',
+    'facebook',
+    'analytics',
+    'optimizely',
+    'clicktale',
+    'mixpanel',
+    'zedo',
+    'clicksor',
+    'tiqcdn',
+];
+
+
 crawler.pageNum = 0
 
 crawler.init = async function () {
-    crawler.browser = await pup.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'], ignoreHTTPSErrors: true, dumpio: false });
+    crawler.browser = await pup.launch({
+        args: ['--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--disable-gpu'], ignoreHTTPSErrors: true, dumpio: false
+    });
     console.log('launch success')
     let date = new Date()
     crawler.date = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
@@ -18,11 +58,21 @@ crawler.newPage = async function () {
     let page = await crawler.browser.newPage();
     //await page.setCacheEnabled(false)
     await page.setRequestInterception(true);
-    page.on('request', interceptedRequest => {
-        if (interceptedRequest.url().endsWith('.png') || interceptedRequest.url().endsWith('.jpg') || interceptedRequest.url().endsWith('.ico') || interceptedRequest.url().endsWith('.css') || interceptedRequest.url().endsWith('.gif') || interceptedRequest.url().endsWith('.svg'))
-            interceptedRequest.abort();
-        else
-            interceptedRequest.continue();
+    page.on('request', request => {
+        const requestUrl = request._url.split('?')[0].split('#')[0];
+        if (blockedResourceTypes.indexOf(request.resourceType()) !== -1 ||
+            skippedResources.some(resource => requestUrl.indexOf(resource)) !== -1 ||
+            request.url().endsWith('.png') ||
+            request.url().endsWith('.jpg') ||
+            request.url().endsWith('.ico') ||
+            request.url().endsWith('.css') ||
+            request.url().endsWith('.gif') ||
+            request.url().endsWith('.svg')) {
+            request.abort();
+        }
+        else {
+            request.continue();
+        }
     });
     return page
 }
@@ -36,12 +86,13 @@ crawler.getInfo = async function (page, id) {
     }
     try {
         await page.goto(`${baseUrl}${id}.html`, {
-            waitUntil: 'load',
-            timeout: 0
+            timeout: 25000,
+            waitUntil: 'networkidle2',
         });
     } catch (e) {
         await page.reload({
-            waitUntil: 'load'
+            waitUntil: 'load',
+            timeout: 250000
         })
     }
 
