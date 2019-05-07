@@ -100,7 +100,7 @@ crawler.getInfo = async function (page, id) {
 
         await page.goto(`${baseUrl}${id}.html`, {
             waitUntil: 'load',
-            timeout: 25000
+            timeout: 40000
 
         });
         //console.log(response._status)
@@ -110,7 +110,7 @@ crawler.getInfo = async function (page, id) {
         await filecmd.wait(300000)
         await page.reload({
             waitUntil: 'load',
-            timeout: 250000
+            timeout: 300000
         })
         crawler.pageTime++
     }
