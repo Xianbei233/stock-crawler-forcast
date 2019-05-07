@@ -1,7 +1,7 @@
 const pup = require('puppeteer')
 const config = require('../config')
 const baseUrl = 'http://quote.eastmoney.com/'
-const userAgent = config.userAgentList.man
+const userAgent = config.userAgentList.auto
 const crawler = {}
 
 const blockedResourceTypes = [

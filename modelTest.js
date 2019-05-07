@@ -1,23 +1,33 @@
-function addstrnums(str) {
-    var tmp = str.replace(/[^0-9]/ig, "");
-    var pos = str.indexOf(tmp);
-
-    if (tmp != "") {
-        var nn = parseInt(tmp) + 1;
-        nn = pad(nn, tmp.length);
-        var left = str.substring(0, pos);
-        var right = str.substring(pos + tmp.length);
-        return left + nn + right;
+let str = 'https://20.newspush.eastmoney.com/sse?cb=icomet_cb_0&cname=bdc02c361aab973818f3583fb8b5e6d5&seq=0&noop=0&token=&_=1557223543120'
+const skippedResources = [
+    'quantserve',
+    'adzerk',
+    'doubleclick',
+    'adition',
+    'exelator',
+    'sharethrough',
+    'cdn.api.twitter',
+    'google-analytics',
+    'googletagmanager',
+    'google',
+    'fontawesome',
+    'facebook',
+    'analytics',
+    'optimizely',
+    'clicktale',
+    'mixpanel',
+    'zedo',
+    'clicksor',
+    'tiqcdn',
+];
+const requestUrl = str.split('?')[0].split('#')[0];
+console.log(requestUrl)
+console.log(skippedResources.some(resource => {
+    let res = requestUrl.indexOf(resource)
+    if (res !== -1) {
+        console.log(resource)
     }
-    else {
-        return str;
-    }
-}
+    return res
+}));
 
-pad = function (tbl) {
-    return function (num, n) {
-        return (0 >= (n = n - num.toString().length)) ? num : (tbl[n] || (tbl[n] = Array(n + 1).join(0))) + num;
-    }
-}([]);
-
-addstrnums('00001')
+console.log(-1 == false)
