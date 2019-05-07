@@ -93,7 +93,7 @@ crawler.getInfo = async function (page, id) {
     try {
         await page.goto(`${baseUrl}${id}.html`, {
             timeout: 25000,
-            waitUntil: 'networkidle2',
+            waitUntil: 'load',
         });
     } catch (e) {
         await page.reload({
@@ -148,7 +148,7 @@ crawler.Close = async function () {
 
 function randomProperty(obj) {
     let keys = Object.keys(obj)
-    return obj[keys[Math.floor(keys.length * Math.random())]];
+    return obj[keys[keys.length * Math.random() << 0]];
 };
 
 module.exports = crawler
