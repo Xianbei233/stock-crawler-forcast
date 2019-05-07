@@ -79,6 +79,7 @@ crawler.newPage = async function () {
             request.continue();
         }
     });
+    console.log('页面创建成功')
     return page
 }
 
@@ -87,6 +88,7 @@ crawler.getInfo = async function (page, id) {
     // crawler.browser = await pup.launch();
     // crawler.page = await crawler.browser.newPage();
     await page.setUserAgent(randomProperty(userAgent))
+    console.log('userAgent创建成功')
     if (!page) {
         return null
     }
