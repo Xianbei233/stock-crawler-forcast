@@ -36,7 +36,12 @@ const skippedResources = [
     'tiqcdn',
 ];
 
-
+const userAgent = {
+    baidu: 'Mozilla/ 5.0(compatible; Baiduspider / 2.0; +http://www.baidu.com/search/spider.html)',
+    Google: 'Mozilla / 5.0(compatible; Googlebot / 2.1; +http://www.google.com/bot.html)',
+    Sogou: 'Sogou web spider / 4.0(+http://www.sogou.com/docs/help/webmasters.htm#07)',
+    Yahoo: 'Mozilla / 5.0(compatible; Yahoo! Slurp / 3.0; http://help.yahoo.com/help/us/ysearch/slurp)'
+}
 crawler.pageNum = 0
 
 crawler.init = async function () {
@@ -81,6 +86,7 @@ crawler.newPage = async function () {
 crawler.getInfo = async function (page, id) {
     // crawler.browser = await pup.launch();
     // crawler.page = await crawler.browser.newPage();
+    await page.setUserAgent(randomProperty(userAgent))
     if (!page) {
         return null
     }
@@ -139,5 +145,10 @@ crawler.Close = async function () {
     }
 
 }
+
+function randomProperty(obj) {
+    let keys = Object.keys(obj)
+    return obj[keys[keys.length * Math.random() << 0]];
+};
 
 module.exports = crawler
