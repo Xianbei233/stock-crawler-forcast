@@ -43,7 +43,6 @@ crawler.pageTime = 0
 
 crawler.init = async function () {
     crawler.browser = await pup.launch({
-        executablePath: '/usr/lib64/chromium-browser/headless_shell',
         headless: true,
         args: ['--no-sandbox',
             '--disable-setuid-sandbox',
@@ -172,3 +171,7 @@ function randomProperty(obj) {
 };
 
 module.exports = crawler
+
+
+
+
