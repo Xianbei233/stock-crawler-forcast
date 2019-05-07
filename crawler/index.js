@@ -148,7 +148,7 @@ crawler.Close = async function () {
 
 function randomProperty(obj) {
     let keys = Object.keys(obj)
-    return obj[keys[keys.length * Math.random() << 0]];
+    return obj[keys[Math.floor(keys.length * Math.random())]];
 };
 
 module.exports = crawler
