@@ -1,5 +1,6 @@
 const pup = require('puppeteer')
 const config = require('../config')
+const filecmd = require('file-cmd')
 const baseUrl = 'http://quote.eastmoney.com/'
 const userAgent = config.userAgentList.auto
 const crawler = {}
@@ -99,6 +100,7 @@ crawler.getInfo = async function (page, id) {
         });
         //console.log(response._status)
     } catch (e) {
+        await filecmd.wait(300000)
         await page.reload({
             waitUntil: 'load',
             timeout: 250000
