@@ -100,12 +100,13 @@ crawler.getInfo = async function (page, id) {
         });
         //console.log(response._status)
     } catch (e) {
+        console.log(e)
         await filecmd.wait(300000)
         await page.reload({
             waitUntil: 'load',
             timeout: 250000
         })
-        console.log(e)
+
     }
 
 
