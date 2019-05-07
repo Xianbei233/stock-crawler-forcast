@@ -39,15 +39,19 @@ const skippedResources = [
 ];
 
 
-crawler.pageNum = 0
+crawler.pageTime = 0
 
 crawler.init = async function () {
     crawler.browser = await pup.launch({
+        headless: true,
         args: ['--no-sandbox',
             '--disable-setuid-sandbox',
             '--disable-dev-shm-usage',
             '--disable-accelerated-2d-canvas',
-            '--disable-gpu'], ignoreHTTPSErrors: true, dumpio: false
+            '--disable-gpu',
+            '--no-first-run',
+            '--no-zygote',
+            '--single-process'], ignoreHTTPSErrors: true, dumpio: false
     });
     console.log('launch success')
     let date = new Date()
@@ -55,11 +59,13 @@ crawler.init = async function () {
 }
 
 crawler.newPage = async function () {
-    crawler.pageNum++
-    console.log(`page${crawler.pageNum} success`)
+
+    //console.log(`page success`)
     let page = await crawler.browser.newPage();
     //await page.setCacheEnabled(false)
     await page.setRequestInterception(true);
+    const agent = randomProperty(userAgent)
+    await page.setUserAgent(agent)
     page.on('request', request => {
         const requestUrl = request._url.split('?')[0].split('#')[0];
         if (blockedResourceTypes.indexOf(request.resourceType()) !== -1 ||
@@ -84,8 +90,7 @@ crawler.newPage = async function () {
 crawler.getInfo = async function (page, id) {
     // crawler.browser = await pup.launch();
     // crawler.page = await crawler.browser.newPage();
-    const agent = randomProperty(userAgent)
-    await page.setUserAgent(agent)
+
 
     if (!page) {
         return null
@@ -93,12 +98,13 @@ crawler.getInfo = async function (page, id) {
 
     try {
 
-        let response = await page.goto(`${baseUrl}${id}.html`, {
+        await page.goto(`${baseUrl}${id}.html`, {
             waitUntil: 'load',
             timeout: 25000
 
         });
         //console.log(response._status)
+        crawler.pageTime++
     } catch (e) {
         console.log(e)
         await filecmd.wait(300000)
@@ -106,7 +112,7 @@ crawler.getInfo = async function (page, id) {
             waitUntil: 'load',
             timeout: 250000
         })
-
+        crawler.pageTime++
     }
 
 
@@ -142,6 +148,12 @@ crawler.getInfo = async function (page, id) {
 
     // await crawler.browser.close();
     return res
+}
+
+crawler.pageChange = async function (page) {
+    await page.close();
+    crawler.pageTime = 0
+    return await crawler.newPage()
 }
 
 crawler.Close = async function () {
