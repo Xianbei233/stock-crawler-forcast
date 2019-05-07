@@ -17,6 +17,13 @@ crawler.newPage = async function () {
     console.log(`page${crawler.pageNum} success`)
     let page = await crawler.browser.newPage();
     //await page.setCacheEnabled(false)
+    await page.setRequestInterception(true);
+    page.on('request', interceptedRequest => {
+        if (interceptedRequest.url().endsWith('.png') || interceptedRequest.url().endsWith('.jpg') || interceptedRequest.url().endsWith('.ico') || interceptedRequest.url().endsWith('.css') || interceptedRequest.url().endsWith('.gif') || interceptedRequest.url().endsWith('.svg'))
+            interceptedRequest.abort();
+        else
+            interceptedRequest.continue();
+    });
     return page
 }
 
@@ -29,8 +36,7 @@ crawler.getInfo = async function (page, id) {
     }
     try {
         await page.goto(`${baseUrl}${id}.html`, {
-            timeout: 6000
-
+            waitUntil: 'load'
         });
     } catch (e) {
         await page.reload()
@@ -53,6 +59,9 @@ crawler.getInfo = async function (page, id) {
         let open = select('#gt1')
         let close = select('#price9')
         if (!open) {
+            return null
+        }
+        if (isNaN(parseFloat(close))) {
             return null
         }
         return {
