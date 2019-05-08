@@ -140,9 +140,10 @@ async function firstFetch(start, end, market, stockList) {
             //console.log(res)
             await db.setStock(`${market}${start}`, res.date, res.highest, res.lowest, res.open, res.close, res.volume)
             console.log(`${market}${start}:success`)
-        } else {
+        }
+        if (res == '停牌') {
             stockList[market].push(start)
-            console.log(`${market}${start}:success`)
+            console.log(`${market}${start}:停牌`)
         }
         start = addstrnums(start)
         await fileCmd.wait(1000)    //每发一次请求等待1秒避免被发现
