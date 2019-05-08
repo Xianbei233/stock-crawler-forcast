@@ -169,7 +169,11 @@ crawler.getInfo = async function (page, id) {
 
         let close = select('#price9')
         if (isNaN(parseFloat(close))) {
-            return null
+            if (close == '停牌'){
+                return close
+            }else{
+                return null
+            }
         }
         let open = select('#gt1')
         if (!open) {
