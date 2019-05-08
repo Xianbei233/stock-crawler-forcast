@@ -57,7 +57,7 @@ async function accelerate(stockList) {
 async function cycleFetch(market, stockList) {
 
     for (let n = 0; n < stockList[market].length; n++) {
-        if (crawler.browbrowserTime >= 200) {
+        if (crawler.browserTime >= 200) {
             await crawler.reboot()
         }
         if (crawler.pageTime >= 101) {
@@ -126,7 +126,7 @@ async function firstFetch(start, end, market, stockList) {
 
     while (start != end) {
         //console.log(`fetch ${market}${start}`)
-        if (crawler.browbrowserTime >= 300) {
+        if (crawler.browserTime >= 300) {
             await crawler.reboot()
         }
         if (crawler.pageTime >= 200) {
