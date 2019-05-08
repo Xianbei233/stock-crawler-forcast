@@ -209,7 +209,7 @@ crawler.pageChange = async function (page) {
 
 crawler.reboot = async function () {
     await crawler.browser.close()
-    crawler.init()
+    await crawler.init()
     console.log('reboot success')
 }
 
