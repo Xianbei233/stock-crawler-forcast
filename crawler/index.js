@@ -88,7 +88,8 @@ crawler.pageSetting = async function (page) {
             request.url().endsWith('.ico') ||
             request.url().endsWith('.css') ||
             request.url().endsWith('.gif') ||
-            request.url().endsWith('.svg')) {
+            request.url().endsWith('.svg') ||
+            request.url().endsWith('404.js')) {
             request.abort();
         }
         else {
@@ -135,7 +136,10 @@ crawler.getInfo = async function (page, id) {
         //console.log(e)
 
     }
-
+    // await page.waitForNavigation({
+    //     waitUntil: 'load',
+    //     timeout: 60000
+    // })
 
     let res = await page.evaluate((date) => {
 
@@ -169,9 +173,9 @@ crawler.getInfo = async function (page, id) {
 
         let close = select('#price9')
         if (isNaN(parseFloat(close))) {
-            if (close == '停牌'){
+            if (close == '停牌') {
                 return close
-            }else{
+            } else {
                 return null
             }
         }
