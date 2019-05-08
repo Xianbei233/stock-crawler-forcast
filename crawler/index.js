@@ -59,7 +59,7 @@ crawler.init = async function () {
     crawler.page = (await crawler.browser.pages())[0]
     await crawler.pageSetting(crawler.page)
     crawler.pageTime = 0
-    crawler.errTime = 0
+    crawler.browserTime = 0
     console.log('launch success')
 }
 
@@ -96,25 +96,18 @@ crawler.pageSetting = async function (page) {
         }
     });
     page.on('error', async () => {
-        crawler.errTime++
-        let url = crawler.page.url()
-        let arr = url.split('/')
-        let id = arr[3]
-        if (crawler.errTime >= 4) {
+        crawler.browserTime++
 
-            crawler.reboot()
-            crawler.getInfo(crawler.page, id)
-            crawler.pageTime++
-        } else {
-            await filecmd.wait(60000)
-            await crawler.page.reload({
-                waitUntil: 'load',
-                timeout: 60000
-            })
-            crawler.pageTime++
-        }
+        await filecmd.wait(30000)
+        await crawler.page.reload({
+            waitUntil: 'load',
+            timeout: 60000
+        })
+        crawler.pageTime++
 
-    })
+    }
+
+    )
     console.log('页面设置完成')
 }
 
@@ -132,16 +125,16 @@ crawler.getInfo = async function (page, id) {
 
         await page.goto(`${baseUrl}${id}.html`, {
             waitUntil: 'load',
-            timeout: 40000
+            timeout: 60000
 
         });
         //console.log(response._status)
+        crawler.browserTime++
         crawler.pageTime++
     } catch (e) {
-        console.log(e)
+        //console.log(e)
 
     }
-
 
 
     let res = await page.evaluate((date) => {
