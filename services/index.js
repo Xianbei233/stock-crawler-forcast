@@ -59,6 +59,7 @@ async function cycleFetch(market, stockList) {
     for (let n = 0; n < stockList[market].length; n++) {
         if (crawler.browserTime >= 200) {
             await crawler.reboot()
+            await fileCmd.wait(30000)
         }
         if (crawler.pageTime >= 101) {
             crawler.page = await crawler.pageChange(crawler.page)
@@ -128,6 +129,7 @@ async function firstFetch(start, end, market, stockList) {
         //console.log(`fetch ${market}${start}`)
         if (crawler.browserTime >= 300) {
             await crawler.reboot()
+            await fileCmd.wait(30000)
         }
         if (crawler.pageTime >= 200) {
             crawler.page = await crawler.pageChange(crawler.page)
@@ -140,6 +142,7 @@ async function firstFetch(start, end, market, stockList) {
             console.log(`${market}${start}:success`)
         } else {
             stockList[market].push(start)
+            console.log(`${market}${start}:success`)
         }
         start = addstrnums(start)
         await fileCmd.wait(1000)    //每发一次请求等待1秒避免被发现
