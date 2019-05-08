@@ -55,20 +55,25 @@ async function accelerate(stockList) {
 }
 
 async function cycleFetch(market, stockList) {
-    let page = await crawler.newPage()
+
     for (let n = 0; n < stockList[market].length; n++) {
-        if (crawler.errTime >= 4) {
-            await crawler.reboot()
-            page = await crawler.newPage()
-        }
         if (crawler.pageTime >= 100) {
-            page = await crawler.pageChange(page)
+            crawler.page = await crawler.pageChange(crawler.page)
         }
         let id = stockList[market][n]
-        await fetch(page, market, id)
+        await fetch(crawler.page, market, id)
 
     }
     await page.close()
+}
+
+async function fetch(page, market, id) {
+    let res = await crawler.getInfo(page, `${market}${id}`);
+    if (res) {
+        await db.setStock(`${market}${id}`, res.date, res.highest, res.lowest, res.open, res.close, res.volume)
+        console.log(`${market}${id}:success`)
+    }
+    await fileCmd.wait(1000)
 }
 
 async function boost(stockList) {
@@ -112,32 +117,21 @@ async function boost(stockList) {
     console.log('create finish');
 }
 
-async function fetch(page, market, id) {
-    let res = await crawler.getInfo(page, `${market}${id}`);
-    if (res) {
-        await db.setStock(`${market}${id}`, res.date, res.highest, res.lowest, res.open, res.close)
-        console.log(`${market}${id}:success`)
-    } else {
-        console.log(`${market}${id}:failed`)
-    }
-    await fileCmd.wait(1000)
-}
+
 
 async function firstFetch(start, end, market, stockList) {
-    let page = await crawler.newPage()
+
     while (start != end) {
         //console.log(`fetch ${market}${start}`)
-        if (crawler.errTime >= 4) {
-            await crawler.reboot()
-            page = await crawler.newPage()
-        }
+
         if (crawler.pageTime >= 300) {
-            page = await crawler.pageChange(page)
+            crawler.page = await crawler.pageChange(crawler.page)
         }
-        let res = await crawler.getInfo(page, `${market}${start}`)
+        let res = await crawler.getInfo(crawler.page, `${market}${start}`)
         if (res) {
             stockList[market].push(start)
-            await db.setStock(`${market}${start}`, res.date, res.highest, res.lowest, res.open, res.close)
+            //console.log(res)
+            await db.setStock(`${market}${start}`, res.date, res.highest, res.lowest, res.open, res.close, res.volume)
             console.log(`${market}${start}:success`)
         } else {
             //console.log(`${market}${start}:failed`)

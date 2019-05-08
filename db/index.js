@@ -19,9 +19,9 @@ client.on('ready', function (res) {
     console.log('client ready');
 });
 
-db.setStock = (id, date, highest, lowest, open, close) => {
+db.setStock = (id, date, highest, lowest, open, close, volume) => {
     return new Promise((resolve, reject) => {
-        let value = `${open},${highest},${lowest},${close}`
+        let value = `${open},${highest},${lowest},${close},${volume}`
         client.hset(id, date, value, function (err, res) {
             if (err) {
                 reject(err)
