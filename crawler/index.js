@@ -40,6 +40,7 @@ const skippedResources = [
 
 
 crawler.pageTime = 0
+crawler.errTime = 0
 
 crawler.init = async function () {
     crawler.browser = await pup.launch({
@@ -107,10 +108,11 @@ crawler.getInfo = async function (page, id) {
         crawler.pageTime++
     } catch (e) {
         console.log(e)
-        await filecmd.wait(300000)
+        crawler.errTime++
+        await filecmd.wait(60000)
         await page.reload({
             waitUntil: 'load',
-            timeout: 300000
+            timeout: 30000
         })
         crawler.pageTime++
     }
@@ -154,6 +156,22 @@ crawler.pageChange = async function (page) {
     await page.close();
     crawler.pageTime = 0
     return await crawler.newPage()
+}
+
+crawler.reboot = async function(){
+    await crawler.browser.close()
+    crawler.browser = await pup.launch({
+        headless: true,
+        args: ['--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--disable-gpu',
+            '--no-first-run',
+            '--no-zygote',
+            '--single-process'], ignoreHTTPSErrors: true, dumpio: false
+    });
+    console.log('reboot success')
 }
 
 crawler.Close = async function () {

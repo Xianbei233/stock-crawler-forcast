@@ -44,19 +44,24 @@ service.getLanguages = function () {
 }
 
 async function accelerate(stockList) {
-    let promiseArr = []
+    //let promiseArr = []
     for (let market in stockList) {
-        let page = await crawler.newPage()
+
         //promiseArr.push(cycleFetch(page, market, stockList))
-        await cycleFetch(page, market, stockList)
+        await cycleFetch(market, stockList)
     }
     //await Promise.all(promiseArr)
     console.log('update finish')
 }
 
-async function cycleFetch(page, market, stockList) {
+async function cycleFetch(market, stockList) {
+    let page = await crawler.newPage()
     for (let n = 0; n < stockList[market].length; n++) {
-        if (crawler.pageTime >= 10) {
+        if (crawler.errTime >= 4) {
+            await crawler.reboot()
+            page = await crawler.newPage()
+        }
+        if (crawler.pageTime >= 100) {
             page = await crawler.pageChange(page)
         }
         let id = stockList[market][n]
@@ -76,7 +81,7 @@ async function boost(stockList) {
             let end = '300770'
             //promiseArr.push(firstFetch(start, end, market, stockList, await crawler.newPage()))
             //await Promise.all(promiseArr)
-            await firstFetch(start, end, market, stockList, await crawler.newPage())
+            await firstFetch(start, end, market, stockList)
         }
         if (market == 'sh') {
             let start = '600000'
@@ -86,8 +91,8 @@ async function boost(stockList) {
             //promiseArr2.push(firstFetch(start, end, market, stockList, await crawler.newPage()))
             //promiseArr2.push(firstFetch(start2, end2, market, stockList, await crawler.newPage()))
             //await Promise.all(promiseArr2)
-            await firstFetch(start, end, market, stockList, await crawler.newPage())
-            await firstFetch(start2, end2, market, stockList, await crawler.newPage())
+            await firstFetch(start, end, market, stockList)
+            await firstFetch(start2, end2, market, stockList)
         }
         if (market == 'hk/') {
             let start = '00001'
@@ -97,8 +102,8 @@ async function boost(stockList) {
             //promiseArr3.push(firstFetch(start, end, market, await crawler.newPage()))
             //promiseArr3.push(firstFetch(start2, end2, market, await crawler.newPage()))
             //await Promise.all(promiseArr3)
-            await firstFetch(start, end, market, stockList, await crawler.newPage())
-            await firstFetch(start2, end2, market, stockList, await crawler.newPage())
+            await firstFetch(start, end, market, stockList)
+            await firstFetch(start2, end2, market, stockList)
         }
     }
 
@@ -118,10 +123,14 @@ async function fetch(page, market, id) {
     await fileCmd.wait(1000)
 }
 
-async function firstFetch(start, end, market, stockList, page) {
-
+async function firstFetch(start, end, market, stockList) {
+    let page = await crawler.newPage()
     while (start != end) {
         //console.log(`fetch ${market}${start}`)
+        if (crawler.errTime >= 4) {
+            await crawler.reboot()
+            page = await crawler.newPage()
+        }
         if (crawler.pageTime >= 300) {
             page = await crawler.pageChange(page)
         }
