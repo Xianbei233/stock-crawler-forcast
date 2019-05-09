@@ -73,14 +73,17 @@ async function cycleFetch(market, stockList) {
 
 async function fetch(page, market, id) {
     let res = await crawler.getInfo(page, `${market}${id}`);
+    if (!res) {
+        console.log(`${market}${start}:不存在`)
+        await fileCmd.wait(1000)
+    }
+    if (res == '停牌') {
+        console.log(`${market}${start}:停牌`)
+    }
+
     if (res && res !== '停牌') {
         await db.setStock(`${market}${id}`, res.date, res.highest, res.lowest, res.open, res.close, res.volume)
         console.log(`${market}${id}:success`)
-    } if (res == '停牌') {
-        console.log(`${market}${start}:停牌`)
-    } else {
-        console.log(`${market}${start}:不存在`)
-        await fileCmd.wait(1000)
     }
     await fileCmd.wait(1000)
 }
@@ -140,19 +143,22 @@ async function firstFetch(start, end, market, stockList) {
             crawler.page = await crawler.pageChange(crawler.page)
         }
         let res = await crawler.getInfo(crawler.page, `${market}${start}`)
+        if (!res) {
+            console.log(`${market}${start}:不存在`)
+            await fileCmd.wait(1000)
+        }
+        if (res == '停牌') {
+            stockList[market].push(start)
+            console.log(`${market}${start}:停牌`)
+        }
+
         if (res && res !== '停牌') {
             stockList[market].push(start)
             //console.log(res)
             await db.setStock(`${market}${start}`, res.date, res.highest, res.lowest, res.open, res.close, res.volume)
             console.log(`${market}${start}:success`)
         }
-        if (res == '停牌') {
-            stockList[market].push(start)
-            console.log(`${market}${start}:停牌`)
-        }else{
-            console.log(`${market}${start}:不存在`)
-            await fileCmd.wait(1000)
-        }
+
         start = addstrnums(start)
         await fileCmd.wait(1000)    //每发一次请求等待1秒避免被发现
     }
