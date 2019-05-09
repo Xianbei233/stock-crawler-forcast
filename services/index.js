@@ -68,14 +68,14 @@ async function cycleFetch(market, stockList) {
         await fetch(crawler.page, market, id)
 
     }
-    await page.close()
+
 }
 
 async function fetch(page, market, id) {
     let res = await crawler.getInfo(page, `${market}${id}`);
     if (!res) {
         console.log(`${market}${start}:不存在`)
-        await fileCmd.wait(1000)
+        await fileCmd.wait(1500)
     }
     if (res == '停牌') {
         console.log(`${market}${start}:停牌`)
@@ -151,7 +151,7 @@ async function firstFetch(start, end, market, stockList) {
         let res = await crawler.getInfo(crawler.page, `${market}${start}`)
         if (!res) {
             console.log(`${market}${start}:不存在`)
-            await fileCmd.wait(1000)
+            await fileCmd.wait(1500)
         }
         if (res == '停牌') {
             stockList[market].push(start)
@@ -168,7 +168,7 @@ async function firstFetch(start, end, market, stockList) {
         start = addstrnums(start)
         await fileCmd.wait(1000)    //每发一次请求等待1秒避免被发现
     }
-    await page.close()
+
 }
 
 function addstrnums(str) {
