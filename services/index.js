@@ -76,6 +76,11 @@ async function fetch(page, market, id) {
     if (res && res !== '停牌') {
         await db.setStock(`${market}${id}`, res.date, res.highest, res.lowest, res.open, res.close, res.volume)
         console.log(`${market}${id}:success`)
+    } if (res == '停牌') {
+        console.log(`${market}${start}:停牌`)
+    } else {
+        console.log(`${market}${start}:不存在`)
+        await fileCmd.wait(1000)
     }
     await fileCmd.wait(1000)
 }
@@ -127,7 +132,7 @@ async function firstFetch(start, end, market, stockList) {
 
     while (start != end) {
         //console.log(`fetch ${market}${start}`)
-        if (crawler.browserTime >= 300) {
+        if (crawler.browserTime >= 450) {
             await crawler.reboot()
             await fileCmd.wait(30000)
         }
@@ -144,6 +149,9 @@ async function firstFetch(start, end, market, stockList) {
         if (res == '停牌') {
             stockList[market].push(start)
             console.log(`${market}${start}:停牌`)
+        }else{
+            console.log(`${market}${start}:不存在`)
+            await fileCmd.wait(1000)
         }
         start = addstrnums(start)
         await fileCmd.wait(1000)    //每发一次请求等待1秒避免被发现

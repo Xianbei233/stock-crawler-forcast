@@ -89,7 +89,9 @@ crawler.pageSetting = async function (page) {
             request.url().endsWith('.css') ||
             request.url().endsWith('.gif') ||
             request.url().endsWith('.svg') ||
-            request.url().endsWith('404.js')) {
+            request.url().endsWith('404.js') ||
+            request.url().endsWith('usercollect.min.js') ||
+            request.url().endsWith('public_proverbs_data_25.js')) {
             request.abort();
         }
         else {
