@@ -90,8 +90,7 @@ crawler.pageSetting = async function (page) {
             request.url().endsWith('.gif') ||
             request.url().endsWith('.svg') ||
             request.url().endsWith('404.js') ||
-            request.url().endsWith('usercollect.min.js') ||
-            request.url().endsWith('public_proverbs_data_25.js')) {
+            request.url().endsWith('usercollect.min.js')) {
             request.abort();
         }
         else {
@@ -142,8 +141,9 @@ crawler.getInfo = async function (page, id) {
     //     waitUntil: 'load',
     //     timeout: 60000
     // })
+    await filecmd.wait(1000)
 
-    let res = await page.evaluate((date) => {
+    let res = await Promise.race([page.evaluate((date) => {
 
         function select(selector) {
             let Dom = document.querySelector(selector)
@@ -182,9 +182,6 @@ crawler.getInfo = async function (page, id) {
             }
         }
         let open = select('#gt1')
-        if (!open) {
-            return null
-        }
         let highest = select('#gt2')
         let lowest = select('#gt9')
 
@@ -200,9 +197,15 @@ crawler.getInfo = async function (page, id) {
             close: close,
             volume: dateExc(volume)
         };
-    }, crawler.date);
-    //console.log(res)
-    // await crawler.browser.close();
+    }, crawler.date), page.waitFor(3000)]).then(res => {
+        if (!res) {
+            return null
+        } else {
+            return res
+        }
+    });
+
+    await page.goto("about:blank");
     return res
 }
 

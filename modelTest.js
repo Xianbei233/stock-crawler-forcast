@@ -1,22 +1,10 @@
-function dateExc(str) {
+const pup = require('puppeteer')
 
-    let newStr = str.replace(/[0-9]+(\.[0-9]*)?/g, function (e, num) {
-        return `${e},`
-    })
-    console.log(newStr)
-    let arr = newStr.split(',')
-    let num = arr[0]
-    console.log(arr)
-    if (arr.indexOf('万手') != -1) {
-
-        num = num.replace(/\./g, '')
-        console.log(num)
-        num = parseInt(num) * 100
-        console.log(num)
-    }
-    return num
+async function test() {
+    const borwser = await pup.launch()
+    const page = await borwser.newPage()
+    const res = await page.waitFor(1000)
+    console.log(res)
 }
 
-
-
-console.log(dateExc('6.29万手'))
+test()

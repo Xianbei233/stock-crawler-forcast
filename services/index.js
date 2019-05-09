@@ -39,9 +39,6 @@ service.updateStockInfo = async function () {
 
 }
 
-service.getLanguages = function () {
-    return config.language.list
-}
 
 async function accelerate(stockList) {
     //let promiseArr = []
@@ -85,7 +82,7 @@ async function fetch(page, market, id) {
         await db.setStock(`${market}${id}`, res.date, res.highest, res.lowest, res.open, res.close, res.volume)
         console.log(`${market}${id}:success`)
     }
-    await fileCmd.wait(1000)
+    
 }
 
 async function boost(stockList) {
@@ -166,7 +163,7 @@ async function firstFetch(start, end, market, stockList) {
         }
 
         start = addstrnums(start)
-        await fileCmd.wait(1000)    //每发一次请求等待1秒避免被发现
+           //每发一次请求等待1秒避免被发现
     }
 
 }
