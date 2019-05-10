@@ -1,10 +1,7 @@
-const pup = require('puppeteer')
+let id = '0200011'
 
-async function test() {
-    const borwser = await pup.launch()
-    const page = await borwser.newPage()
-    const res = await page.waitFor(1000)
-    console.log(res)
+if (id.match(/^20[0-9]+/g)) {
+    console.log('1')
+} else {
+    console.log('0')
 }
-
-test()
