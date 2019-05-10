@@ -72,7 +72,7 @@ async function fetch(page, market, id) {
     let res = await crawler.getInfo(page, `${market}${id}`);
     if (!res) {
         console.log(`${market}${start}:不存在`)
-        await fileCmd.wait(1500)
+        await fileCmd.wait(1000)
     }
     if (res == '停牌') {
         console.log(`${market}${start}:停牌`)
@@ -148,7 +148,7 @@ async function firstFetch(start, end, market, stockList) {
         let res = await crawler.getInfo(crawler.page, `${market}${start}`)
         if (!res) {
             console.log(`${market}${start}:不存在`)
-            await fileCmd.wait(1500)
+            await fileCmd.wait(1000)
         }
         if (res == '停牌') {
             stockList[market].push(start)
