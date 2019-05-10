@@ -103,7 +103,7 @@ async function boost(stockList) {
             //await Promise.all(promiseArr)
             await firstFetch(start, end, market, stockList)
             await firstFetch(start2, end2, market, stockList)
-            await firstFetch(start3, end3, market, stockList)
+            await BStockFetch(start3, end3, market, stockList)
             await firstFetch(start4, end4, market, stockList)
         }
         if (market == 'sh') {
@@ -141,7 +141,7 @@ async function firstFetch(start, end, market, stockList) {
 
     while (start != end) {
         //console.log(`fetch ${market}${start}`)
-        if (crawler.browserTime >= 300) {
+        if (crawler.browserTime >= 200) {
             await crawler.reboot()
             await fileCmd.wait(30000)
         }
@@ -149,6 +149,40 @@ async function firstFetch(start, end, market, stockList) {
             crawler.page = await crawler.pageChange(crawler.page)
         }
         let res = await crawler.getInfo(crawler.page, `${market}${start}`)
+        if (!res) {
+            console.log(`${market}${start}:不存在`)
+            await fileCmd.wait(1000)
+        }
+        if (res == '停牌') {
+            stockList[market].push(start)
+            console.log(`${market}${start}:停牌`)
+        }
+
+        if (res && res !== '停牌') {
+            stockList[market].push(start)
+            //console.log(res)
+            await db.setStock(`${market}${start}`, res.date, res.highest, res.lowest, res.open, res.close, res.volume)
+            console.log(`${market}${start}:success`)
+        }
+
+        start = addstrnums(start)
+        //每发一次请求等待1秒避免被发现
+    }
+
+}
+
+async function BStockFetch(start, end, market, stockList) {
+
+    while (start != end) {
+        //console.log(`fetch ${market}${start}`)
+        if (crawler.browserTime >= 300) {
+            await crawler.reboot()
+            await fileCmd.wait(30000)
+        }
+        if (crawler.pageTime >= 100) {
+            crawler.page = await crawler.pageChange(crawler.page)
+        }
+        let res = await crawler.getInfoB(crawler.page, `${market}${start}`)
         if (!res) {
             console.log(`${market}${start}:不存在`)
             await fileCmd.wait(1000)

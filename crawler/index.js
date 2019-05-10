@@ -141,12 +141,12 @@ crawler.getInfo = async function (page, id) {
     //     waitUntil: 'load',
     //     timeout: 60000
     // })
-    if (crawler.browserTime == 1 || crawler.pageTime==1){
+    if (crawler.browserTime == 1 || crawler.pageTime == 1) {
         await filecmd.wait(3000)
-    }else{
+    } else {
         await filecmd.wait(1000)
     }
-    
+
 
     let res = await Promise.race([page.evaluate((date) => {
 
@@ -161,7 +161,7 @@ crawler.getInfo = async function (page, id) {
 
         function dateExc(str) {
 
-            let newStr = str.replace(/[0-9]+(\.[0-9]*)?/g, function (e, num) {
+            let newStr = str.replace(/[0-9]+(\.[0-9]*)?/g, function (e) {
                 return `${e},`
             })
             console.log(newStr)
@@ -222,7 +222,113 @@ crawler.getInfo = async function (page, id) {
     return res
 }
 
+crawler.getInfoB = async function (page, id) {
+    // crawler.browser = await pup.launch();
+    // crawler.page = await crawler.browser.newPage();
 
+
+    if (!page) {
+        return null
+    }
+
+    try {
+
+        await page.goto(`${baseUrl}${id}.html`, {
+            waitUntil: 'load',
+            timeout: 60000
+
+        });
+        //console.log(response._status)
+        crawler.browserTime++
+        crawler.pageTime++
+    } catch (e) {
+        //console.log(e)
+
+    }
+    // await page.waitForNavigation({
+    //     waitUntil: 'load',
+    //     timeout: 60000
+    // })
+    if (crawler.browserTime == 1 || crawler.pageTime == 1) {
+        await filecmd.wait(3000)
+    } else {
+        await filecmd.wait(1000)
+    }
+
+
+    let res = await Promise.race([page.evaluate((date) => {
+
+        function select(selector) {
+            let Dom = document.querySelector(selector)
+            let res
+            if (Dom) {
+                res = Dom.innerText
+            }
+            return res
+        }
+
+        function dateExc(str) {
+
+            let newStr = str.replace(/[0-9]+(\.[0-9]*)?/g, function (e) {
+                return `${e},`
+            })
+            console.log(newStr)
+            let arr = newStr.split(',')
+            let num = arr[0]
+            console.log(arr)
+            if (arr.indexOf('万') != -1) {
+
+                num = num.replace(/\./g, '')
+
+                num = parseInt(num) * 100
+
+            }
+            return num
+        }
+
+        let close = select('#arrowud > strong')
+        if (isNaN(parseFloat(close))) {
+            if (close == '停牌') {
+                return close
+            } else {
+                return null
+            }
+        }
+        let open = select('body > div:nth-child(1) > div.qphox.layout.mb7 > div.data-middle > table > tbody > tr:nth-child(1) > td.txtl.jkj')
+        let highest = select('body > div:nth-child(1) > div.qphox.layout.mb7 > div.data-middle > table > tbody > tr:nth-child(1) > td.txtl.zgj.red')
+        let lowest = select('#body > div:nth-child(1) > div.qphox.layout.mb7 > div.data-middle > table > tbody > tr:nth-child(2) > td.txtl.zdj')
+
+
+        let volume = select('body > div:nth-child(1) > div.qphox.layout.mb7 > div.data-middle > table > tbody > tr:nth-child(1) > td:nth-child(10) > span')
+
+
+        return {
+            date: date,
+            highest: highest,
+            lowest: lowest,
+            open: open,
+            close: close,
+            volume: dateExc(volume)
+        };
+    }, crawler.date), page.waitFor(3000)]).then(res => {
+        if (!res) {
+            return null
+        } else {
+            return res
+        }
+    });
+    try {
+        await page.goto("about:blank", {
+            waitUntil: 'load',
+            timeout: 60000
+
+        });
+    } catch (e) {
+        await crawler.reboot()
+    }
+
+    return res
+}
 
 
 
