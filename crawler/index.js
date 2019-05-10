@@ -296,7 +296,7 @@ crawler.getInfoB = async function (page, id) {
         }
         let open = select('body > div:nth-child(1) > div.qphox.layout.mb7 > div.data-middle > table > tbody > tr:nth-child(1) > td.txtl.jkj')
         let highest = select('body > div:nth-child(1) > div.qphox.layout.mb7 > div.data-middle > table > tbody > tr:nth-child(1) > td.txtl.zgj.red')
-        let lowest = select('#body > div:nth-child(1) > div.qphox.layout.mb7 > div.data-middle > table > tbody > tr:nth-child(2) > td.txtl.zdj')
+        let lowest = select('body > div:nth-child(1) > div.qphox.layout.mb7 > div.data-middle > table > tbody > tr:nth-child(2) > td.txtl.zdj')
 
 
         let volume = select('body > div:nth-child(1) > div.qphox.layout.mb7 > div.data-middle > table > tbody > tr:nth-child(1) > td:nth-child(10) > span')
