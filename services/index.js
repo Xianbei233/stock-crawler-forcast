@@ -91,17 +91,20 @@ async function boost(stockList) {
     //let promiseArr3 = []
     for (let market in stockList) {
         if (market == 'sz') {
-            let start = '000001'
+            let start = '000000'
             let start2 = '001650'
-            let start3 = '300000'
+            let start3 = '200000'
+            let start4 = '300000'
             let end = '001000'
             let end2 = '003000'
-            let end3 = '300780'
+            let end3 = '202000'
+            let end4 = '300780'
             //promiseArr.push(firstFetch(start, end, market, stockList, await crawler.newPage()))
             //await Promise.all(promiseArr)
             await firstFetch(start, end, market, stockList)
             await firstFetch(start2, end2, market, stockList)
             await firstFetch(start3, end3, market, stockList)
+            await firstFetch(start4, end4, market, stockList)
         }
         if (market == 'sh') {
             let start = '600000'
