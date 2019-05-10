@@ -155,10 +155,10 @@ async function firstFetch(start, end, market, stockList) {
             crawler.page = await crawler.pageChange(crawler.page)
         }
         let res
-        if (id.match(/^20[0-9]+/g)) {
-            res = await crawler.getInfoB(page, `${market}${id}`);
+        if (start.match(/^20[0-9]+/g)) {
+            res = await crawler.getInfoB(page, `${market}${start}`);
         } else {
-            res = await crawler.getInfo(page, `${market}${id}`);
+            res = await crawler.getInfo(page, `${market}${start}`);
         }
         if (!res) {
             console.log(`${market}${start}:不存在`)
