@@ -141,7 +141,7 @@ crawler.getInfo = async function (page, id) {
     //     waitUntil: 'load',
     //     timeout: 60000
     // })
-    await filecmd.wait(1500)
+    await filecmd.wait(1000)
 
     let res = await Promise.race([page.evaluate((date) => {
 
