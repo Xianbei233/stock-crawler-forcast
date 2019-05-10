@@ -156,9 +156,9 @@ async function firstFetch(start, end, market, stockList) {
         }
         let res
         if (start.match(/^20[0-9]+/g)) {
-            res = await crawler.getInfoB(page, `${market}${start}`);
+            res = await crawler.getInfoB(crawler.page, `${market}${start}`);
         } else {
-            res = await crawler.getInfo(page, `${market}${start}`);
+            res = await crawler.getInfo(crawler.page, `${market}${start}`);
         }
         if (!res) {
             console.log(`${market}${start}:不存在`)
