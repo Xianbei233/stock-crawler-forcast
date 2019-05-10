@@ -204,16 +204,16 @@ crawler.getInfo = async function (page, id) {
             return res
         }
     });
-    try{
+    try {
         await page.goto("about:blank", {
             waitUntil: 'load',
             timeout: 60000
 
         });
-    }catch(e){
+    } catch (e) {
         await crawler.reboot()
     }
-    
+
     return res
 }
 

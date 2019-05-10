@@ -58,7 +58,7 @@ async function cycleFetch(market, stockList) {
             await crawler.reboot()
             await fileCmd.wait(30000)
         }
-        if (crawler.pageTime >= 101) {
+        if (crawler.pageTime >= 100) {
             crawler.page = await crawler.pageChange(crawler.page)
         }
         let id = stockList[market][n]
@@ -82,7 +82,7 @@ async function fetch(page, market, id) {
         await db.setStock(`${market}${id}`, res.date, res.highest, res.lowest, res.open, res.close, res.volume)
         console.log(`${market}${id}:success`)
     }
-    
+
 }
 
 async function boost(stockList) {
@@ -138,11 +138,11 @@ async function firstFetch(start, end, market, stockList) {
 
     while (start != end) {
         //console.log(`fetch ${market}${start}`)
-        if (crawler.browserTime >= 450) {
+        if (crawler.browserTime >= 300) {
             await crawler.reboot()
             await fileCmd.wait(30000)
         }
-        if (crawler.pageTime >= 200) {
+        if (crawler.pageTime >= 100) {
             crawler.page = await crawler.pageChange(crawler.page)
         }
         let res = await crawler.getInfo(crawler.page, `${market}${start}`)
@@ -163,7 +163,7 @@ async function firstFetch(start, end, market, stockList) {
         }
 
         start = addstrnums(start)
-           //每发一次请求等待1秒避免被发现
+        //每发一次请求等待1秒避免被发现
     }
 
 }
