@@ -70,7 +70,7 @@ async function cycleFetch(market, stockList) {
 
 async function fetch(page, market, id) {
     let res
-    if (id.match(/^20[0-9]+/g)) {
+    if (id.match(/^20[0-9]+/g) || id.match(/^90[0-9]+/g)) {
         res = await crawler.getInfoB(page, `${market}${id}`);
     } else {
         res = await crawler.getInfo(page, `${market}${id}`);
@@ -114,7 +114,7 @@ async function boost(stockList) {
         }
         if (market == 'sh') {
             let start = '600000'
-            let start2 = '900929'
+            let start2 = '900900'
             let end = '604000'
             let end2 = '900960'
             //promiseArr2.push(firstFetch(start, end, market, stockList, await crawler.newPage()))
@@ -155,7 +155,7 @@ async function firstFetch(start, end, market, stockList) {
             crawler.page = await crawler.pageChange(crawler.page)
         }
         let res
-        if (start.match(/^20[0-9]+/g)) {
+        if (start.match(/^20[0-9]+/g) || start.match(/^90[0-9]+/g)) {
             res = await crawler.getInfoB(crawler.page, `${market}${start}`);
         } else {
             res = await crawler.getInfo(crawler.page, `${market}${start}`);
