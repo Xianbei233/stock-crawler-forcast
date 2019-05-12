@@ -178,11 +178,26 @@ crawler.getInfo = async function (page, id) {
             return num
         }
 
+        function sleep(ms) {
+            return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+
+        async function test(time) {
+            let temple = await sleep(time);
+
+            return temple
+        }
+
         let close = select('#price9')
         if (isNaN(parseFloat(close))) {
             if (close == '停牌') {
                 return close
-            } else {
+            }
+            if (close == 'NaN' || close == '-') {
+                test(30000)
+                close = select('#price9')
+            }
+            else {
                 return null
             }
         }
@@ -286,11 +301,26 @@ crawler.getInfoB = async function (page, id) {
             return num
         }
 
+        function sleep(ms) {
+            return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+
+        async function test(time) {
+            let temple = await sleep(time);
+
+            return temple
+        }
+
         let close = select('#arrowud > strong')
         if (isNaN(parseFloat(close))) {
             if (close == '停牌') {
                 return close
-            } else {
+            }
+            if (close == 'NaN' || close == '-') {
+                test(30000)
+                close = select('#arrowud > strong')
+            }
+            else {
                 return null
             }
         }
