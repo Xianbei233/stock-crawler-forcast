@@ -77,11 +77,11 @@ async function fetch(page, market, id) {
     }
 
     if (!res) {
-        console.log(`${market}${start}:不存在`)
+        console.log(`${market}${id}:不存在`)
         await fileCmd.wait(1000)
     }
     if (res == '停牌') {
-        console.log(`${market}${start}:停牌`)
+        console.log(`${market}${id}:停牌`)
     }
 
     if (res && res !== '停牌') {
