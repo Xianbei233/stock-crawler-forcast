@@ -2,7 +2,7 @@ const nodeSchedule = require('node-schedule')
 const service = require('../services')
 const path = require('path')
 const fs = require('fs')
-
+const process = require('process')
 //每小时的40分钟执行
 let rule = new nodeSchedule.RecurrenceRule()
 rule.minute = 0
@@ -13,7 +13,7 @@ let schedule = {}
 
 schedule.start = () => {
     let hasStockList = fs.existsSync(path.resolve(__dirname, '../config/stockList.json'))//判断存储股票代码的json文件是否存在
-    if (!hasStockList) {
+    if (!hasStockList || process.argv.slice(2).indexOf('start') !== -1) {
         service.updateStockInfo()
     }
 

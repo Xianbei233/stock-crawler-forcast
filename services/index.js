@@ -22,12 +22,14 @@ service.updateStockInfo = async function () {
     let hasStockList = fs.existsSync(path.resolve(__dirname, '../config/stockList.json'))//判断存储股票代码的json文件是否存在
     if (hasStockList) {
         let stockList = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../config/stockList.json'), 'utf8'))
+        console.log('当前模式：更新数据库')
         await accelerate(stockList)
     } else {
         let stockList = {}
         config.stockMarket.list.forEach(market => {
             stockList[market] = []
         })
+        console.log('当前模式：初始化数据库')
         await boost(stockList)
 
         fs.writeFileSync(path.resolve(__dirname, '../config/stockList.json'), JSON.stringify(stockList), 'utf8')
