@@ -82,11 +82,11 @@ async function fetch(page, market, id) {
         console.log(`${market}${id}:不存在`)
         await fileCmd.wait(1000)
     }
-    if (res == '停牌') {
-        console.log(`${market}${id}:停牌`)
+    if (res == '停牌' || res == '暂停上市') {
+        console.log(`${market}${id}:${res}`)
     }
 
-    if (res && res !== '停牌') {
+    if (res && res !== '停牌' && res !== '暂停上市') {
         await db.setStock(`${market}${id}`, res.date, res.highest, res.lowest, res.open, res.close, res.volume)
         console.log(`${market}${id}:success`)
     }
@@ -166,12 +166,12 @@ async function firstFetch(start, end, market, stockList) {
             console.log(`${market}${start}:不存在`)
             await fileCmd.wait(1000)
         }
-        if (res == '停牌') {
+        if (res == '停牌' || res == '暂停上市') {
             stockList[market].push(start)
-            console.log(`${market}${start}:停牌`)
+            console.log(`${market}${start}:${res}`)
         }
 
-        if (res && res !== '停牌') {
+        if (res && res !== '停牌' && res !== '暂停上市') {
             stockList[market].push(start)
             //console.log(res)
             await db.setStock(`${market}${start}`, res.date, res.highest, res.lowest, res.open, res.close, res.volume)

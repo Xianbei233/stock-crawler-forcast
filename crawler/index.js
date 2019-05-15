@@ -190,7 +190,7 @@ crawler.getInfo = async function (page, id) {
 
         let close = select('#price9')
         if (isNaN(parseFloat(close))) {
-            if (close == '停牌') {
+            if (close == '停牌' || close == '暂停上市') {
                 return close
             }
             if (close == 'NaN' || close == '-') {
@@ -217,7 +217,7 @@ crawler.getInfo = async function (page, id) {
             close: close,
             volume: dateExc(volume)
         };
-    }, crawler.date), page.waitFor(3000)]).then(res => {
+    }, crawler.date), page.waitFor(5000)]).then(res => {
         if (!res) {
             return null
         } else {
@@ -313,7 +313,7 @@ crawler.getInfoB = async function (page, id) {
 
         let close = select('#arrowud > strong')
         if (isNaN(parseFloat(close))) {
-            if (close == '停牌') {
+            if (close == '停牌' || close == '暂时上市') {
                 return close
             }
             if (close == 'NaN' || close == '-') {
@@ -340,7 +340,7 @@ crawler.getInfoB = async function (page, id) {
             close: close,
             volume: dateExc(volume)
         };
-    }, crawler.date), page.waitFor(3000)]).then(res => {
+    }, crawler.date), page.waitFor(30000)]).then(res => {
         if (!res) {
             return null
         } else {
