@@ -5,7 +5,7 @@ const readline = require('readline')
 function formatter(filename) {
     let readStream = fs.createReadStream(path.resolve(__dirname, `../csv/${filename}.csv`))
     let writerStream = fs.createWriteStream(path.resolve(__dirname, `../csv/${filename}-rebuild.csv`))
-    writerStream.write('Date,Open,Highest,Lowest,Close,Volume\n')
+    writerStream.write('Date,Open,High,Low,Close,Volume\n')
     let reader = readline.createInterface({
         input: readStream
     })
