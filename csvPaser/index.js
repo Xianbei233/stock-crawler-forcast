@@ -9,10 +9,12 @@ function formatter(filename) {
     let reader = readline.createInterface({
         input: readStream
     })
-    let reg = /([0-9]),/g
+    let reg1 = /([0-9]),/g
+    let reg2 = /"/g
     reader.on('line', function (line) {
-        let newline = line.replace(reg, "$1\", \"")
-        writerStream.write(`${newline}\n`)
+        let newline1 = line.replace(reg1, "$1\", \"")
+        let newline2 = newline1.replace(reg2, "")
+        writerStream.write(`${newline2}\n`)
     })
     reader.on('close', function () {
         writerStream.end()
