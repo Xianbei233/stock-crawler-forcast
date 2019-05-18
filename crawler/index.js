@@ -75,7 +75,7 @@ crawler.newPage = async function () {
 }
 
 crawler.pageSetting = async function (page) {
-    //await page.setCacheEnabled(false)
+    await page.setCacheEnabled(false)
     await page.setRequestInterception(true);
     const agent = randomProperty(userAgent)
     await page.setUserAgent(agent)
@@ -105,7 +105,7 @@ crawler.pageSetting = async function (page) {
         await filecmd.wait(30000)
         await crawler.page.reload({
             waitUntil: 'load',
-            timeout: 60000
+            timeout: 600000
         })
         crawler.pageTime++
 
