@@ -81,8 +81,10 @@ crawler.pageSetting = async function (page) {
     await page.setUserAgent(agent)
     page.on('request', request => {
         const requestUrl = request._url.split('?')[0].split('#')[0];
+        const requestUrl2 = request._url.split('/')
         if (blockedResourceTypes.indexOf(request.resourceType()) !== -1 ||
             skippedResources.some(resource => requestUrl.indexOf(resource) == -1 ? false : true) !== false ||
+            requestUrl2.indexOf('api') !== -1 ||
             request.url().endsWith('.png') ||
             request.url().endsWith('.jpg') ||
             request.url().endsWith('.ico') ||
@@ -194,7 +196,7 @@ crawler.getInfo = async function (page, id) {
                 return close
             }
             if (close == 'NaN' || close == '-') {
-                test(30000)
+                test(20000)
                 close = select('#price9')
             }
             else {
@@ -217,7 +219,7 @@ crawler.getInfo = async function (page, id) {
             close: close,
             volume: dateExc(volume)
         };
-    }, crawler.date), page.waitFor(5000)]).then(res => {
+    }, crawler.date), page.waitFor(30000)]).then(res => {
         if (!res) {
             return null
         } else {
@@ -317,7 +319,7 @@ crawler.getInfoB = async function (page, id) {
                 return close
             }
             if (close == 'NaN' || close == '-') {
-                test(30000)
+                test(20000)
                 close = select('#arrowud > strong')
             }
             else {
