@@ -17,12 +17,13 @@
   "dependencies": {
     "file-cmd": "^0.1.0",
     "koa": "^2.7.0",
+    "koa-auto-router": "^1.0.9",
     "koa-bodyparser": "^4.2.1",
     "koa-cors": "0.0.16",
+    "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
     "node-schedule": "^1.3.2",
     "puppeteer": "^1.15.0",
-    "puppeteer-core": "^1.15.0",
     "redis": "^2.8.0"
   }
 }
