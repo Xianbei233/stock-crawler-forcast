@@ -1,3 +1,5 @@
-let str = 'Bstock'
-let arr = str.split('-')
-console.log(arr[0])
+const format = require('./csvPaser')
+const fs = require('fs')
+const path = require('path')
+
+format('test')
