@@ -50,7 +50,7 @@ db.getStock = id => {
 }
 
 db.getStockCSV = id => {
-    exec(`redis-cli --csv hgetall ${id} > ${path.resolve(__dirname, '../csv')}/${id}.csv 2> stderr.txt`, function (err, stdout, stderr) {
+    exec(`redis-cli -a ${config.redis.auth} --csv hgetall ${id} > ${path.resolve(__dirname, '../csv')}/${id}.csv 2> stderr.txt`, function (err, stdout, stderr) {
         if (err) {
             console.error(err);
             return err;
