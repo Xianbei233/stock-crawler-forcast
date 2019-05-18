@@ -1,6 +1,7 @@
 const redis = require('redis')
 const config = require('../config')
 const { exec } = require('child_process');
+const path = require('path')
 const formatter = require('../csvPaser')
 
 const client = redis.createClient(config.redis.port, config.redis.host)
@@ -49,7 +50,7 @@ db.getStock = id => {
 }
 
 db.getStockCSV = id => {
-    exec(`redis-cli --csv hgetall ${id} > ../csv/${id}.csv 2> stderr.txt`, function (err, stdout, stderr) {
+    exec(`redis-cli --csv hgetall ${id} > ${path.resolve(__dirname, '../csv')}/${id}.csv 2> stderr.txt`, function (err, stdout, stderr) {
         if (err) {
             console.error(err);
             return err;
