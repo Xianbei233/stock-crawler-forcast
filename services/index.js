@@ -7,12 +7,13 @@ const db = require('../db')
 
 const service = {}
 
-service.getStock = async function (stockType, id) {
+service.getStock = async function (id) {
     if (!id) {
-        return '请填写股票代码'
+        return null
     }
 
-    let res = await db.getStock(`${stockType}${id}`)
+    await db.getStockCSV(`${id}`)
+    let res = fs.readFileSync(path.resolve(__dirname,`${id}.csv`))
     return res
 }
 

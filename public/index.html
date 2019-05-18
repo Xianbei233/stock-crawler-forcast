@@ -1,0 +1,197 @@
+<html>
+
+<head>
+  <meta charset="uft-8">
+  <title>股票预测</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection" />
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+  <style>
+    .close-first {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <br>
+  <div class="row" style="padding-left:10px;padding-right:10px">
+    <ul class="collapsible" data-collapsible="accordion">
+      <li>
+        <div class="collapsible-header">
+          <i class="material-icons" style="font-size:3rem">settings</i>
+          <div class="row" style="margin-bottom:10px;margin-top:10px">
+            <div class="col s3 m1">
+              设置
+            </div>
+            <div class="input-field col s12 m1 right" style="margin-top:5px; width:160px">
+              <button id="trainbutton" class="waves-effect waves-light btn red lighten-2">训练</button>
+            </div>
+            <div class="input-field col s12 m1 right" style="margin-top:5px; width:160px">
+              <button id="suggestbutton" class="waves-effect waves-light btn blue lighten-2">建议</button>
+            </div>
+            <div class="file-field input-field col s12 m1 right" style="margin-top:5px; width:160px">
+              <div class="btn blue lighten-2 waves-effect waves-light" style="height:36px; line-height:2.5rem">
+                <span>选择CSV</span>
+                <input id="uploadcsv" type="file">
+              </div>
+            </div>
+            <div class="file-field input-field col s12 m1 right" style="margin-top:5px; width:160px">
+              <a id="getCsv" href="#modal1" class="btn blue lighten-2 waves-effect waves-light modal-trigger"
+                style="height:36px; line-height:2.5rem">
+                获取csv
+              </a>
+            </div>
+            <div class="file-field input-field col s12 m1 right" style="margin-top:5px; width:160px">
+            </div>
+          </div>
+        </div>
+
+        <div class="collapsible-body"><span>
+            <div class="row center">
+              <div class="input-field col m2 offset-m1" style="margin-left:5.33%">
+                神经网络设定
+              </div>
+              <div class="input-field col s12 m1">
+                <input id="learningrate" type="number" placeholder="Eg: 0.001" class="validate tooltipped"
+                  data-position="bottom" data-delay="50" data-tooltip="训练期间的学习率">
+                <label class="active">学习率</label>
+              </div>
+              <div class="input-field col s12 m1">
+                <input id="inputdropoutrate" type="number" placeholder="Eg: 0.9" class="validate tooltipped"
+                  data-position="bottom" data-delay="50" data-tooltip="LSTM输入的遗忘率">
+                <label class="active">输入遗忘率</label>
+              </div>
+              <div class="input-field col s12 m1">
+                <input id="outputdropoutrate" type="number" placeholder="Eg: 0.9" class="validate tooltipped"
+                  data-position="bottom" data-delay="50" data-tooltip="LSTM输出的遗忘率">
+                <label class="active">输出遗忘率</label>
+              </div>
+              <div class="input-field col s12 m1">
+                <input id="timestamp" type="number" class="validate tooltipped" placeholder="Eg: 5"
+                  data-position="bottom" data-delay="50" data-tooltip="每个minibatch的趋势">
+                <label class="active">每轮训练时间戳</label>
+              </div>
+              <div class="input-field col s12 m1">
+                <input id="sizelayer" type="number" class="validate tooltipped" placeholder="Eg: 64"
+                  data-position="bottom" data-delay="50" data-tooltip="LSTM模型的规模">
+                <label class="active">层规模</label>
+              </div>
+              <div class="input-field col s12 m1">
+                <input id="epoch" type="number" class="validate tooltipped" placeholder="Eg: 10" data-position="bottom"
+                  data-delay="50" data-tooltip="总训练轮数">
+                <label class="active">训练迭代</label>
+              </div>
+              <div class="input-field col s12 m1">
+                <input id="future" type="number" class="validate tooltipped" placeholder="Eg: 10" data-position="bottom"
+                  data-delay="50" data-tooltip="预测天数">
+                <label class="active">预测的时间长度（天）</label>
+              </div>
+              <div class="input-field col s12 m1">
+                <input id="smooth" type="number" class="validate tooltipped" placeholder="Eg: 10" data-position="bottom"
+                  data-delay="50" data-tooltip="趋势的速率锚平滑">
+                <label class="active">平滑权重</label>
+              </div>
+            </div>
+            <div class="row center">
+              <div class="input-field col m2 offset-m1" style="margin-left:5.33%">
+                买&卖模拟
+              </div>
+              <div class="input-field col s12 m2">
+                <input id="initialmoney" type="number" placeholder="Eg: 10000" class="validate tooltipped"
+                  data-position="bottom" data-delay="50" data-tooltip="用于模拟操作的金钱数">
+                <label class="active">初始金额(美元)</label>
+              </div>
+              <div class="input-field col s12 m2">
+                <input id="maxbuy" type="number" placeholder="Eg: 5" class="validate tooltipped" data-position="bottom"
+                  data-delay="50" data-tooltip="最大（手）买入">
+                <label class="active">最大买入(手)</label>
+              </div>
+              <div class="input-field col s12 m2">
+                <input id="maxsell" type="number" class="validate tooltipped" placeholder="Eg: 10"
+                  data-position="bottom" data-delay="50" data-tooltip="最大（手）卖出">
+                <label class="active">最大卖出(手)</label>
+              </div>
+              <div class="input-field col s12 m2">
+                <input id="history" type="number" class="validate tooltipped" placeholder="Eg: 5" data-position="bottom"
+                  data-delay="50" data-tooltip="用于比较的MA">
+                <label class="active">历史记录回滚</label>
+              </div>
+            </div>
+          </span></div>
+      </li>
+    </ul>
+  </div>
+
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <h4>请输入想要获取的股票代码</h4>
+      <input id="code" type="text">
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">取消</a>
+      <a id='send' href="#!" class="modal-close waves-effect waves-green btn-flat">获取</a>
+    </div>
+  </div>
+
+  <h6 class='header center light'>警告, 本页面在训练过程中会陷入假死,并且不要用该网站去进行真实的股票投资！<br><br>默认股票是2018年份的Google, 你可以尝试上传任何股票的csv文件
+  </h6>
+  <div class="row" style="padding-left:10px;padding-right:10px">
+    <div class="col s12 m12">
+      <div id="div_output" style="height: 500px;"></div>
+    </div>
+  </div>
+  <br>
+  <div class="row close-first" style="padding-left:10px;padding-right:10px">
+    <div class="col s12 m8">
+      <div id="div_dist" style="height: 450px;"></div>
+    </div>
+    <div class="col s12 m4">
+      <div class="row">
+        <div id="div_loss" style="height: 250px;"></div>
+      </div>
+      <div class="row" id="log" style="height: 150px; overflow:auto;">
+      </div>
+    </div>
+  </div>
+  <div class="row" style="padding-left:10px;padding-right:10px">
+    <ul class="collapsible" data-collapsible="accordion">
+      <li>
+        <div class="collapsible-header"><i class="material-icons">archive</i>模拟记录</div>
+        <div class="collapsible-body"><span>
+            <table class="bordered highlight">
+              <thead>
+                <tr>
+                  <th>日期</th>
+                  <th>操作</th>
+                  <th>价格</th>
+                  <th>股价涨跌</th>
+                  <th>余额</th>
+                </tr>
+              </thead>
+              <tbody id='table-body'>
+              </tbody>
+            </table><br>
+            <span id="log-invest"></span>
+          </span></div>
+      </li>
+    </ul>
+  </div>
+  <div class="row center" id="color-investment">
+  </div>
+
+</body>
+
+<script src="js/tf.js"></script>
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/materialize.min.js"></script>
+<script src="js/d3.v3.min.js"></script>
+<script src="js/numeric-1.2.6.min.js"></script>
+<script src="js/numjs.min.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/echarts.min.js"></script>
+<script src="js/echarts-gl.min.js"></script>
+<script src="js/papaparse.min.js"></script>
+<script src="data/google.js"> </script>
+<script src="init.js"> </script>

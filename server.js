@@ -1,21 +1,24 @@
 const Koa = require('koa')
-const cors = require('koa-cors')
 const bodyparser = require('koa-bodyparser')
 const path = require('path')
 const koaStatic = require('koa-static')
+const process = require('process')
 const schedule = require('./schedule')
-//const service = require('./services')
+const autoRoutes = require('koa-auto-router')
 
 const app = new Koa()
 
 app.use(koaStatic(path.join(__dirname, 'public')))
 
-app
-    .use(cors())
-    .use(bodyparser())
+app.use(bodyparser())
+
+autoRoutes(app, path.join(__dirname, 'routers'))
 
 
-//service.updateStockInfo()
-schedule.start()
+if (process.argv.slice(2).indexOf('crawler') !== -1) {
+    schedule.start()
+}
+
+
 
 app.listen(8000)
