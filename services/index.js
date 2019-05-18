@@ -12,6 +12,7 @@ service.getStock = async function (id) {
         return null
     }
     await db.getStockCSV(`${id}`)
+    await fileCmd.wait(1500)
     let res = fs.readFileSync(path.resolve(__dirname, `../csv/${id}.csv`))
     return res
 }
