@@ -80,8 +80,9 @@ crawler.pageSetting = async function (page) {
     const agent = randomProperty(userAgent)
     await page.setUserAgent(agent)
     page.on('request', request => {
-        const requestUrl = request._url.split('?')[0].split('#')[0];
-        const requestUrl2 = request._url.split('/')
+        let requestUrl = request._url.split('?')[0].split('#')[0];
+        let requestUrl2 = request._url.split('/')
+        let requestJs = requestUrl2[requestUrl2.length - 1].split(".")[0].split('-')[0]
         if (blockedResourceTypes.indexOf(request.resourceType()) !== -1 ||
             skippedResources.some(resource => requestUrl.indexOf(resource) == -1 ? false : true) !== false ||
             requestUrl2.indexOf('api') !== -1 ||
@@ -91,8 +92,7 @@ crawler.pageSetting = async function (page) {
             request.url().endsWith('.css') ||
             request.url().endsWith('.gif') ||
             request.url().endsWith('.svg') ||
-            request.url().endsWith('404.js') ||
-            request.url().endsWith('usercollect.min.js')) {
+            (request.url().endsWith('.js') && requestJs !== 'jquery' && requestJs !== 'Bstock')) {
             request.abort();
         }
         else {
