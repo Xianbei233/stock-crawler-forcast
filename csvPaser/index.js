@@ -23,6 +23,7 @@ function formatter(filename) {
         writerStream.end()
         fs.unlinkSync(path.resolve(__dirname, `../csv/${filename}.csv`))
         fs.renameSync(path.resolve(__dirname, `../csv/${filename}-rebuild.csv`), path.resolve(__dirname, `../csv/${filename}.csv`))
+        
     })
 }
 
