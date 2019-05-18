@@ -342,7 +342,7 @@ crawler.getInfoB = async function (page, id) {
             close: close,
             volume: dateExc(volume)
         };
-    }, crawler.date), page.waitFor(30000)]).then(res => {
+    }, crawler.date), page.waitFor(300000)]).then(res => {
         if (!res) {
             return null
         } else {
