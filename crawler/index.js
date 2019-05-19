@@ -21,7 +21,7 @@ const skippedResources = [
     'bdstatic.eastmoney.com',
     'gubawebapi.eastmoney.com',
     'bdstatics.eastmoney.com',
-    'emres.dfcfw.com'  
+    'emres.dfcfw.com'
 ];
 
 const needJs = [
@@ -77,7 +77,7 @@ crawler.pageSetting = async function (page) {
     await page.setRequestInterception(true);
     const agent = randomProperty(userAgent)
     await page.setUserAgent(agent)
-    page.on('request', request => {        
+    page.on('request', request => {
         let requestUrl = request.url().split('/')
         let requestJs = requestUrl[requestUrl.length - 1].split(".")[0].split('-')[0]
         if (blockedResourceTypes.indexOf(request.resourceType()) !== -1 ||
@@ -90,6 +90,7 @@ crawler.pageSetting = async function (page) {
             request.url().endsWith('.gif') ||
             request.url().endsWith('.svg') ||
             (request.url().endsWith('.js') && needJs.some(js => requestJs == js ? false : true))) {
+            console.log(`${request.url()}请求已屏蔽`)
             request.abort();
         }
         else {
