@@ -87,7 +87,7 @@ crawler.pageSetting = async function (page) {
             request.url().endsWith('.jpg') ||
             request.url().endsWith('.ico') ||
             request.url().endsWith('.css') ||
-            request.url().endsWith('.gif') ||
+            (request.url().endsWith('.gif') && !request.url().endsWith('picknotfund.gif')) ||
             request.url().endsWith('.svg') ||
             (request.url().endsWith('.js') && needJs.some(js => requestJs == js ? false : true))) {
             console.log(`${request.url()}请求已屏蔽`)
