@@ -38,6 +38,7 @@ db.setStock = (id, date, highest, lowest, open, close, volume) => {
 db.getStockCSV = async id => {
     if (!hasCSVfolder) {
         fs.mkdirSync(path.resolve(__dirname, '../csv'))
+        hasCSVfolder = true
     }
 
     try {
