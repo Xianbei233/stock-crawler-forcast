@@ -16,6 +16,7 @@ autoRoutes(app, path.join(__dirname, '/routers'))
 
 
 if (process.argv.slice(2).indexOf('crawler') !== -1) {
+    console.log("爬虫模式启动")
     schedule.start()
 }
 
