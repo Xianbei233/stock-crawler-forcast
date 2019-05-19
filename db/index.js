@@ -9,7 +9,9 @@ const newExec = utils.promisify(exec)
 const client = redis.createClient(config.redis.port, config.redis.host)
 
 const db = {}
-let hasCSVfolder = fs.existsSync(path.resolve(__dirname, '../csv'))
+
+
+
 client.auth(config.redis.auth, function () {
     console.log('认证通过')
 })
@@ -36,9 +38,8 @@ db.setStock = (id, date, highest, lowest, open, close, volume) => {
 }
 
 db.getStockCSV = async id => {
-    if (!hasCSVfolder) {
+    if (!fs.existsSync(path.resolve(__dirname, '../csv'))) {
         fs.mkdirSync(path.resolve(__dirname, '../csv'))
-        hasCSVfolder = fs.existsSync(path.resolve(__dirname, '../csv'))
     }
 
     try {
