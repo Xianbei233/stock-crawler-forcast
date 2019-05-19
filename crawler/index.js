@@ -6,14 +6,14 @@ const userAgent = config.userAgentList.auto
 const crawler = {}
 
 const blockedResourceTypes = [
-    'image',
+    //'image',
     'media',
     'font',
     'texttrack',
     'object',
     'beacon',
     'csp_report',
-    'imageset',
+    //'imageset',
 ];
 
 const skippedResources = [
