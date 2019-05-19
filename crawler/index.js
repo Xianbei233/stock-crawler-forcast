@@ -17,28 +17,26 @@ const blockedResourceTypes = [
 ];
 
 const skippedResources = [
-    'quantserve',
-    'adzerk',
-    'doubleclick',
-    'adition',
-    'exelator',
-    'sharethrough',
-    'cdn.api.twitter',
-    'google-analytics',
-    'googletagmanager',
-    'google',
-    'fontawesome',
-    'facebook',
-    'analytics',
-    'optimizely',
-    'clicktale',
-    'mixpanel',
-    'zedo',
-    'clicksor',
-    'tiqcdn',
+    'gbfek.dfcfw.com',
+    'bdstatic.eastmoney.com',
+    'gubawebapi.eastmoney.com',
+    'bdstatics.eastmoney.com',
+    'emres.dfcfw.com'  
 ];
 
-
+const needJs = [
+    'require',
+    'config',
+    'Bstock',
+    'baseStock',
+    'common',
+    'emZjlChart',
+    'jquery',
+    'emcharts',
+    'template',
+    'emChart',
+    'stocksuggest2017'
+]
 
 
 crawler.init = async function () {
@@ -79,20 +77,19 @@ crawler.pageSetting = async function (page) {
     await page.setRequestInterception(true);
     const agent = randomProperty(userAgent)
     await page.setUserAgent(agent)
-    page.on('request', request => {
-        let requestUrl = request._url.split('?')[0].split('#')[0];
-        let requestUrl2 = request._url.split('/')
-        let requestJs = requestUrl2[requestUrl2.length - 1].split(".")[0].split('-')[0]
+    page.on('request', request => {        
+        let requestUrl = request.url().split('/')
+        let requestJs = requestUrl[requestUrl.length - 1].split(".")[0].split('-')[0]
         if (blockedResourceTypes.indexOf(request.resourceType()) !== -1 ||
             skippedResources.some(resource => requestUrl.indexOf(resource) == -1 ? false : true) !== false ||
-            requestUrl2.indexOf('api') !== -1 ||
+            requestUrl.indexOf('api') !== -1 ||
             request.url().endsWith('.png') ||
             request.url().endsWith('.jpg') ||
             request.url().endsWith('.ico') ||
             request.url().endsWith('.css') ||
             request.url().endsWith('.gif') ||
             request.url().endsWith('.svg') ||
-            (request.url().endsWith('.js') && requestJs !== 'jquery' && requestJs !== 'Bstock')) {
+            (request.url().endsWith('.js') && needJs.some(js => requestJs == js ? false : true))) {
             request.abort();
         }
         else {
