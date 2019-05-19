@@ -1,6 +1,7 @@
 const pup = require('puppeteer')
 const config = require('../config')
 const filecmd = require('file-cmd')
+const process = require('process')
 const baseUrl = 'http://quote.eastmoney.com/'
 const userAgent = config.userAgentList.auto
 const crawler = {}
@@ -38,6 +39,8 @@ const needJs = [
     'stocksuggest2017'
 ]
 
+
+let testmode = process.argv.slice(2).indexOf('test')
 
 crawler.init = async function () {
     crawler.browser = await pup.launch({
@@ -90,7 +93,10 @@ crawler.pageSetting = async function (page) {
             (request.url().endsWith('.gif') && !request.url().endsWith('picknotfund.gif')) ||
             request.url().endsWith('.svg') ||
             (request.url().endsWith('.js') && needJs.some(js => requestJs == js ? false : true))) {
-            console.log(`${request.url()}请求已屏蔽`)
+            if (testmode !== -1) {
+                console.log(`${request.url()}请求已屏蔽`)
+            }
+
             request.abort();
         }
         else {
@@ -99,16 +105,16 @@ crawler.pageSetting = async function (page) {
     });
     page.on('error', async () => {
         crawler.browserTime++
-        console.log("页面出错，开始重载")
+        if (testmode !== -1) {
+            console.log("页面出错，开始重载")
+        }
         await filecmd.wait(30000)
         await crawler.page.reload({
             waitUntil: 'load',
             timeout: 600000
         })
         crawler.pageTime++
-
     }
-
     )
     console.log('页面设置完成')
 }
@@ -247,20 +253,29 @@ crawler.getInfoB = async function (page, id) {
     }
 
     try {
-        console.log("开始页面跳转");
+        if (testmode !== -1) {
+            console.log("开始页面跳转");
+        }
+
 
         await page.goto(`${baseUrl}${id}.html`, {
             waitUntil: 'load',
             timeout: 60000
 
         });
-        console.log("页面跳转成功")
+        if (testmode !== -1) {
+            console.log("页面跳转成功")
+        }
+
         //console.log(response._status)
         crawler.browserTime++
         crawler.pageTime++
     } catch (e) {
         //console.log(e)
-        console.log("页面跳转超时")
+        if (testmode !== -1) {
+            console.log("页面跳转超时")
+        }
+
     }
     // await page.waitForNavigation({
     //     waitUntil: 'load',
@@ -274,7 +289,6 @@ crawler.getInfoB = async function (page, id) {
 
 
     let res = await Promise.race([page.evaluate((date) => {
-        console.log("开始页面处理")
         function select(selector) {
             let Dom = document.querySelector(selector)
             let res
@@ -319,7 +333,6 @@ crawler.getInfoB = async function (page, id) {
                 return close
             }
             if (close == 'NaN' || close == '-') {
-                console.log("数据尚未获取，等待")
                 test(20000)
                 close = select('#arrowud > strong')
             }
@@ -333,7 +346,6 @@ crawler.getInfoB = async function (page, id) {
 
 
         let volume = select('body > div:nth-child(1) > div.qphox.layout.mb7 > div.data-middle > table > tbody > tr:nth-child(1) > td:nth-child(10) > span')
-        console.log("数据获取成功，返回中")
 
         return {
             date: date,
@@ -345,10 +357,16 @@ crawler.getInfoB = async function (page, id) {
         };
     }, crawler.date), page.waitFor(300000)]).then(res => {
         if (!res) {
-            console.log("数据获取超时")
+            if (testmode !== -1) {
+                console.log("数据获取超时")
+            }
+
             return null
         } else {
-            console.log("数据获取成功")
+            if (testmode !== -1) {
+                console.log("数据获取成功")
+            }
+
             return res
         }
     });
@@ -358,9 +376,14 @@ crawler.getInfoB = async function (page, id) {
             timeout: 60000
 
         });
-        console.log("跳转空白成功")
+        if (testmode !== -1) {
+            console.log("跳转空白成功")
+        }
+
     } catch (e) {
-        console.log("跳转空白失败，浏览器重启")
+        if (testmode !== -1) {
+            console.log("跳转空白失败，浏览器重启")
+        }
         await crawler.reboot()
     }
 
