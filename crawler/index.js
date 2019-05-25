@@ -83,6 +83,7 @@ crawler.pageSetting = async function (page) {
     page.on('request', request => {
         let requestUrl = request.url().split('/')
         let requestJs = requestUrl[requestUrl.length - 1].split(".")[0].split('-')[0]
+        //console.log(requestJs)
         if (blockedResourceTypes.indexOf(request.resourceType()) !== -1 ||
             skippedResources.some(resource => requestUrl.indexOf(resource) == -1 ? false : true) !== false ||
             requestUrl.indexOf('api') !== -1 ||
@@ -92,7 +93,7 @@ crawler.pageSetting = async function (page) {
             request.url().endsWith('.css') ||
             (request.url().endsWith('.gif') && !request.url().endsWith('picknotfund.gif')) ||
             request.url().endsWith('.svg') ||
-            (request.url().endsWith('.js') && needJs.some(js => requestJs == js ? false : true))) {
+            (request.url().endsWith('.js') && !needJs.some(js => requestJs == js))) {
             if (testmode !== -1) {
                 console.log(`${request.url()}请求已屏蔽`)
             }

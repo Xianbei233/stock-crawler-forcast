@@ -7,6 +7,8 @@ const db = require('../db')
 
 const service = {}
 
+let testmode = process.argv.slice(2).indexOf('test')
+
 service.getStock = async function (id) {
     if (!id) {
         return null
@@ -78,7 +80,9 @@ async function fetch(page, market, id) {
     } else {
         res = await crawler.getInfo(page, `${market}${id}`);
     }
-
+    if (testmode !== -1) {
+        console.log(res)
+    }
     if (!res) {
         console.log(`${market}${id}:不存在`)
         await fileCmd.wait(1000)
@@ -162,6 +166,9 @@ async function firstFetch(start, end, market, stockList) {
             res = await crawler.getInfoB(crawler.page, `${market}${start}`);
         } else {
             res = await crawler.getInfo(crawler.page, `${market}${start}`);
+        }
+        if (testmode !== -1) {
+            console.log(res)
         }
         if (!res) {
             console.log(`${market}${start}:不存在`)
